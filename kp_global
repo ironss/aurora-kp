@@ -33,14 +33,10 @@ def fetch():
     text = download(expected_filename, kp_forecast_3day.url)
     kp_forecasts = kp_forecast_3day.parse(text)
 
-    #print(kp_forecasts)
     t_now_dt = datetime.datetime.now(tz=datetime.timezone.utc)
     t_prev_dt = t_now_dt.replace(hour=(t_now_dt.hour // 3) * 3, minute=0, second=0, microsecond=0)
     t_next_dt = t_prev_dt + datetime.timedelta(hours=3)
     now_fraction = (t_now_dt - t_prev_dt).total_seconds() / datetime.timedelta(hours=3).total_seconds()
-    
-    #print(t_prev_dt)
-    #print(t_next_dt)
     
     try:
         kp_prev = kp_forecasts[t_prev_dt][0]   
@@ -53,32 +49,14 @@ def fetch():
     print("kp_forecast.value {:0.2f}".format(kp_now))
 
 
-def fetch_old():
-    utc_dt = datetime.datetime.now(tz=datetime.timezone.utc)
-    if utc_dt.hour %3 == 0 and utc_dt.minute >= 0 and utc_dt.minute < 5:   # Only return the value once every 3 hours. There is probably be a better way to do this.
-        expected_filename = '/var/lib/munin/aurora/kp-forecast-3day-{:%Y-%m-%d}.txt'.format(utc_dt)
-        dirname = os.path.dirname(expected_filename)
-        os.makedirs(dirname, exist_ok=True)
-        text = download(expected_filename, kp_forecast_3day.url)
-        kp_forecasts = kp_forecast_3day.parse(text)
-
-        x1_dt = utc_dt.replace(minute=0, second=0, microsecond=0)
-        try:
-            forecast1 = kp_forecasts[x_dt]
-        except KeyError:
-            print("kp_forecast.value {:0.2f}".format(forecast[0]))
-            return
-
-    else:
-        print("kp_forecast.value U")
-
-
 def config():
     print("host_name worldwide.place")
-    print("graph_title Kp forecast")
+    print("graph_title Kp index")
     print("graph_category other")
     print("graph_vlabel Kp")
+    print("graph_args --lower-limit 0 --upper-limit 9 --rigid")
     print("kp_forecast.label Kp forecast")
+    print("kp_forecast.line 7")
 
 
 if len(sys.argv) > 1:
