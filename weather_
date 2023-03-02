@@ -139,7 +139,6 @@ _graph_specs = [
             'graph_title Wind direction',
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
-            #'graph_args --lower-limit -1 --upper-limit +1',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
             'graph_order winddirection1,windvector_E,windvector_N',
@@ -213,8 +212,12 @@ def fetch(hostname, location):
             fmt = fld['fmt']
             
             if param_name is not None:
-                value = report._asdict()[param_name]
-                value_fmt = fmt.format(value)
+                try:
+                    value = report._asdict()[param_name]
+                    value_fmt = fmt.format(value)
+                except KeyError:
+                    value_fmt = 'U'
+                    
                 print('{}.value {}'.format(fld_name, value_fmt))
         print()
     
