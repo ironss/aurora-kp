@@ -28,75 +28,196 @@ _locations = {
 }
 
 
-_graphs = [
-    ( 
-        'temperature',
-        [
-            "graph_title Temperature",
-            "graph_category weather",
-            "graph_args --lower-limit -10 --upper-limit 40 --rigid",
-            "graph_vlabel °C",
-            "temperature.label Temperature (°C)",
+_graph_specs = [
+    {   
+        'name': 'temperature',
+        'config': [
+            'graph_title Temperature',
+            'graph_category weather',
+            'graph_args --lower-limit -10 --upper-limit 40 --rigid',
+            'graph_vlabel °C',
         ],
-        'temperature_C',
-        '{:0.1f}',
-    ),
+        'fields': [
+            {
+                'name': 'air_temperature',
+                'config': [
+                    'label Air temperature (°C)',
+                ],
+                'fmt': '{:0.1f}',
+                'param': 'temperature_C',
+            },
+        ],
+    },
 
-    (
-        'pressure',
-        [
-            "graph_title Pressure",
-            "graph_category weather",
-            "graph_args --lower-limit 900 --upper-limit 1100 --rigid",
-            "graph_scale no",
-            "graph_vlabel hPa",
-            "pressure.label Pressure (hPa)",
+    {   
+        'name': 'humidity',
+        'config': [
+            'graph_title Humidity',
+            'graph_category weather',
+            'graph_args --lower-limit -10 --upper-limit 40 --rigid',
+            'graph_vlabel Humidity (%RH)',
         ],
-        'pressure_hPa',
-        '{:0.0f}',
-    ),
+        'fields': [
+            {
+                'name': 'air_humidity',
+                'config': [
+                    'label Air humidity (%RH)',
+                ],
+                'fmt': '{:0.0f}',
+                'param': 'relative_humidity_pc',
+            },
+        ],
+    },
 
-    (
-        'windspeed',
-        [
-            "graph_title Wind speed",
-            "graph_category weather",
-            "graph_args --lower-limit 0 --upper-limit 40 --rigid",
-            "graph_scale no",
-            "graph_vlabel kn",
-            "windspeed.label Wind speed (kn)",
-            "windspeed.cdef windspeed,1.944,*"
+    {
+        'name': 'pressure',
+        'config': [
+            'graph_title Pressure',
+            'graph_category weather',
+            'graph_args --lower-limit 890 --upper-limit 1100 --rigid --y-grid 10:50',
+            'graph_scale no',
+            'graph_vlabel hPa',
         ],
-        'wind_speed_m_s',
-        '{:0.0f}',
-    ),
+        'fields': [
+            {
+                'name': 'air_pressure',
+                'config': [
+                    'label Air pressure (hPa)',
+                 ],
+                 'fmt': '{:0.0f}',
+                 'param': 'pressure_hPa',
+             },
+         ],
+    },
+    
+    {
+        'name': 'windspeed',
+        'config': [
+            'graph_title Wind speed',
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 40 --rigid',
+            'graph_scale no',
+            'graph_vlabel knots',
+        ],
+        'fields': [
+            {
+                'name': 'windspeed',
+                'config': [
+                    'label Wind speed (knots)',
+                    'cdef windspeed,1.944,*',
+                ],
+                'fmt': '{:0.1f}',
+                'param': 'wind_speed_m_s',
+            },
+        ],
+    },
+
+    {
+        'name': 'winddirection',
+        'config': [
+            'graph_title Wind direction',
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
+            'graph_scale no',
+            'graph_vlabel Wind direction (°)',
+        ],
+        'fields': [
+            {
+                'name': 'winddirection',
+                'config': [
+                    'label Wind direction (°)',
+                ],
+                'fmt': '{:0.1f}',
+                'param': 'wind_direction_deg',
+            },
+        ],
+    },
+
+    {
+        'name': 'winddirection1',
+        'config': [
+            'graph_title Wind direction',
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
+            #'graph_args --lower-limit -1 --upper-limit +1',
+            'graph_scale no',
+            'graph_vlabel Wind direction (°)',
+            'graph_order winddirection1,windvector_E,windvector_N',
+        ],
+        'fields': [
+            {
+                'name': 'windvector_E',
+                'config': [
+                    'label Wind vector E',
+                    'graph no',
+                ],
+                'fmt': '{:0.3f}',
+                'param': 'wind_vector_E',
+            },
+            {
+                'name': 'windvector_N',
+                'config': [
+                    'label Wind vector N',
+                    'graph no',
+                ],
+                'fmt': '{:0.3f}',
+                'param': 'wind_vector_N',
+            },
+            {
+                'name': 'winddirection1',
+                'config': [
+                    'label Wind direction (°)',
+                    'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
 ]
 
 
+def config(hostname, location):
+    print("host_name {}".format(hostname))
+    print()
+
+    for gr in _graph_specs:
+        gr_name = gr['name']
+        print('multigraph {}_{}'.format(script_name, gr_name))
+        
+        for cfg in gr['config']:
+            print(cfg)
+        
+        for fld in gr['fields']:
+            fld_name = fld['name']
+            for cfg in fld['config']:
+                print('{}.{}'.format(fld_name, cfg))
+        print()
+        
+        
 def fetch(hostname, location):
     secrets = {
         'api_key': os.environ['OWM_API_KEY']
     }
    
     report = weather.load_report(openweathermap.service, location, secrets)
-    for name, config, key, fmt in _graphs:
-        value = report._asdict()[key]
-        value_fmt = fmt.format(value)
-        print('multigraph {}_{}'.format(script_name, name))
-        print('{}.value {}'.format(name, value_fmt))
+
+    for gr in _graph_specs:
+        gr_name = gr['name']
+        print('multigraph {}_{}'.format(script_name, gr_name))
+        
+        for fld in gr['fields']:
+            fld_name = fld['name']
+            param_name = fld['param']
+            fmt = fld['fmt']
+            
+            if param_name is not None:
+                value = report._asdict()[param_name]
+                value_fmt = fmt.format(value)
+                print('{}.value {}'.format(fld_name, value_fmt))
         print()
-
-
-def config(hostname, location):
-    print("host_name {}".format(hostname))
-    print()
     
-    for name, config, key, fmt in _graphs:
-        print('multigraph {}_{}'.format(script_name, name))
-        for l in config:
-            print(l)
-        print()
-
 
 plugin_name = os.path.basename(sys.argv[0])
 script_name, hostname = plugin_name.split('_')
