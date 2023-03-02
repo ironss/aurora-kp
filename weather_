@@ -16,7 +16,7 @@ def verboselog(s):
 
 
 _locations = {
-    'Christchurch.nz.place'  : ( 'Christchurch, NZ'       , -43.4821,  172.5500,    3),
+    'Christchurch.nz.place'  : ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
     'Lyttelton.nz.place'     : ( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
     'Nelson.nz.place'        : ( 'Nelson, NZ'             , -41.2980,  173.2210,    5),
     'Scott-Base.nz.place'    : ( 'Scott Base, NZ'         , -77.8491,  166.7682,   10),
@@ -120,28 +120,7 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-        ],
-        'fields': [
-            {
-                'name': 'winddirection',
-                'config': [
-                    'label Wind direction (°)',
-                ],
-                'fmt': '{:0.1f}',
-                'param': 'wind_direction_deg',
-            },
-        ],
-    },
-
-    {
-        'name': 'winddirection1',
-        'config': [
-            'graph_title Wind direction',
-            'graph_category weather',
-            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
-            'graph_scale no',
-            'graph_vlabel Wind direction (°)',
-            'graph_order winddirection1,windvector_E,windvector_N',
+            'graph_order winddirection1',
         ],
         'fields': [
             {
