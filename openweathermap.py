@@ -63,8 +63,13 @@ if __name__ == '__main__':
         secrets = json.load(f)
     
     locations = [
-        ( 'Christchurch Airport', -43.4821,  172.5500,  37 ),
-        ( 'Wichita, KA, US'     ,  37.6889,  -97.3361, 400 ),
+        ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
+        #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
+        #( 'Nelson, NZ'             , -41.2980,  173.2210,    5),
+        #( 'Scott Base, NZ'         , -77.8491,  166.7682,   10),
+        #( 'SANAE IV, ZA'           , -71.6724,   -2.8249,  850),
+        #( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
+        #( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
     ]
     
     for location in locations:
