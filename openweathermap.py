@@ -58,9 +58,16 @@ if __name__ == '__main__':
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
         secrets = json.load(f)
-        
-    location = ( 'Christchurch Airport', -43.4821, 172.5500, 30 )
     
-    report = weather.load_report(service, location, secrets['openweathermap'])
-    print(report)
+    locations = [
+        ( 'Christchurch Airport', -43.4821,  172.5500,  37 ),
+        ( 'Wichita, KA, US'     ,  37.6889,  -97.3361, 400 ),
+    ]
+    
+    for location in locations:
+        report = weather.load_report(service, location, secrets['openweathermap'])
+        print(*location)
+        print(report)
+        print()
+
 
