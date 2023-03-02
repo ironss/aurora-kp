@@ -1,0 +1,120 @@
+#! /usr/bin/python3
+
+import datetime
+import os
+import sys
+
+import weather
+import openweathermap
+
+
+verbose = True if os.getenv('MUNIN_DEBUG') == '1' else False
+
+def verboselog(s):
+    if verbose:
+        sys.stderr.write('{}: {}\n'.format(plugin_name, s))
+
+
+_locations = {
+    'Christchurch.nz.place'  : ( 'Christchurch, NZ'       , -43.4821,  172.5500,    3),
+    'Lyttelton.nz.place'     : ( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
+    'Nelson.nz.place'        : ( 'Nelson, NZ'             , -41.2980,  173.2210,    5),
+    'Scott-Base.nz.place'    : ( 'Scott Base, NZ'         , -77.8491,  166.7682,   10),
+
+    'SANAE4.za.place'        : ( 'SANAE IV, ZA'           , -71.6724,   -2.8249,  850),
+
+    'Wichita.ka.us.place'    : ( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
+    'Amundsen-Scott.us.place': ( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
+}
+
+
+_graphs = [
+    ( 
+        'temperature',
+        [
+            "graph_title Temperature",
+            "graph_category weather",
+            "graph_args --lower-limit -10 --upper-limit 40 --rigid",
+            "graph_vlabel °C",
+            "temperature.label Temperature (°C)",
+        ],
+        'temperature_C',
+        '{:0.1f}',
+    ),
+
+    (
+        'pressure',
+        [
+            "graph_title Pressure",
+            "graph_category weather",
+            "graph_args --lower-limit 900 --upper-limit 1100 --rigid",
+            "graph_scale no",
+            "graph_vlabel hPa",
+            "pressure.label Pressure (hPa)",
+        ],
+        'pressure_hPa',
+        '{:0.0f}',
+    ),
+
+    (
+        'windspeed',
+        [
+            "graph_title Wind speed",
+            "graph_category weather",
+            "graph_args --lower-limit 0 --upper-limit 40 --rigid",
+            "graph_scale no",
+            "graph_vlabel kn",
+            "windspeed.label Wind speed (kn)",
+            "windspeed.cdef windspeed,1.944,*"
+        ],
+        'wind_speed_m_s',
+        '{:0.0f}',
+    ),
+]
+
+
+def fetch(hostname, location):
+    secrets = {
+        'api_key': os.environ['OWM_API_KEY']
+    }
+   
+    report = weather.load_report(openweathermap.service, location, secrets)
+    for name, config, key, fmt in _graphs:
+        value = report._asdict()[key]
+        value_fmt = fmt.format(value)
+        print('multigraph {}_{}'.format(script_name, name))
+        print('{}.value {}'.format(name, value_fmt))
+        print()
+
+
+def config(hostname, location):
+    print("host_name {}".format(hostname))
+    print()
+    
+    for name, config, key, fmt in _graphs:
+        print('multigraph {}_{}'.format(script_name, name))
+        for l in config:
+            print(l)
+        print()
+
+
+plugin_name = os.path.basename(sys.argv[0])
+script_name, hostname = plugin_name.split('_')
+location = _locations[hostname]
+
+if len(sys.argv) > 1:
+    cmd = sys.argv[1]
+    if cmd == 'config':
+        config(hostname, location)
+        if True:  # if we support dirtyconfig
+            fetch(hostname, location)
+        sys.exit(0)
+
+    if cmd == 'suggest':
+        sys.exit(0)
+
+    verboselog('unknown argument "{}"'.format(cmd))
+    exit(1)
+
+fetch(hostname, location)
+
