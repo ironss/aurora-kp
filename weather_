@@ -54,7 +54,7 @@ _graph_specs = [
         'config': [
             'graph_title Humidity',
             'graph_category weather',
-            'graph_args --lower-limit -10 --upper-limit 40 --rigid',
+            'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
         ],
         'fields': [
