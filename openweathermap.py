@@ -8,8 +8,14 @@ import math
 
 import weather
 
+
+debug = False
+
 def _parse(report_text):
     report_owm = json.loads(report_text)
+    if debug:
+        print(report_owm)
+        
     report = weather.Weather_report(
         datetime.datetime.fromtimestamp(report_owm['dt'], tz=datetime.timezone.utc),
         report_owm['weather'][0]['main'],
@@ -72,9 +78,10 @@ if __name__ == '__main__':
         #( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
     ]
     
+    debug = True
     for location in locations:
-        report = weather.load_report(service, location, secrets['openweathermap'])
         print(*location)
+        report = weather.load_report(service, location, secrets['openweathermap'])
         print(report)
         print()
 
