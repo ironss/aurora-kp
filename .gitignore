@@ -1,2 +1,5 @@
+secrets.json
+weather_?*
+
 data/
 __pycache__/
