@@ -16,6 +16,8 @@ Weather_report = collections.namedtuple('Weather_report', [
     'pressure_hPa',
     'wind_speed_m_s',
     'wind_direction_deg',
+    'wind_vector_E',
+    'wind_vector_N',
     'precipitation_mm',
     'relative_humidity_pc',
     'cloud_cover_pc',

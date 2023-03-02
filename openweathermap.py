@@ -4,6 +4,7 @@ Weather service file for OpenWeatherMap
 
 import json
 import datetime
+import math
 
 import weather
 
@@ -18,6 +19,8 @@ def _parse(report_text):
         report_owm['main']['pressure'],
         report_owm['wind']['speed'],
         report_owm['wind']['deg'],
+        math.cos(math.radians(90-report_owm['wind']['deg'])),
+        math.sin(math.radians(90-report_owm['wind']['deg'])),
         None,
         report_owm['main']['humidity'],
         report_owm['clouds']['all'],
