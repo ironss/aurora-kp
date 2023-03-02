@@ -109,6 +109,15 @@ _graph_specs = [
                 'fmt': '{:0.1f}',
                 'param': 'wind_speed_m_s',
             },
+            {
+                'name': 'windgust',
+                'config': [
+                    'label Wind gust (knots)',
+                    'cdef windgust,1.944,*',
+                ],
+                'fmt': '{:0.1f}',
+                'param': 'wind_gust_m_s',
+            },
         ],
     },
 
@@ -193,8 +202,12 @@ def fetch(hostname, location):
             if param_name is not None:
                 try:
                     value = report._asdict()[param_name]
-                    value_fmt = fmt.format(value)
                 except KeyError:
+                    value = None
+                    
+                if value is not None:                    
+                    value_fmt = fmt.format(value)
+                else:
                     value_fmt = 'U'
                     
                 print('{}.value {}'.format(fld_name, value_fmt))
