@@ -18,10 +18,13 @@ def _parse(report_text):
         report_owm['main']['temp'],
         report_owm['main']['pressure'],
         report_owm['wind']['speed'],
+        report_owm['wind']['gust'] if 'gust' in report_owm['wind'] else None,
         report_owm['wind']['deg'],
         math.cos(math.radians(90-report_owm['wind']['deg'])),
         math.sin(math.radians(90-report_owm['wind']['deg'])),
-        None,
+        None,  # rain 1h
+        None,  # rain 3h
+        None,  # rain 24h
         report_owm['main']['humidity'],
         report_owm['clouds']['all'],
         report_owm['visibility'],
