@@ -1,5 +1,22 @@
 #! /usr/bin/python3
 
+# Munin weather plugin
+# 
+# A Munin plugin that retrieves the current weather from OpenWeatherMap
+# 
+# The OpenWeatherMap free plan is restricted to 
+#     * 60 requests per minute
+#     * 1 million requests per month
+# 
+# Munin does a request every 5 minutes for each location, or 8928 requests per 31-day month
+# 
+# The free plan restrictions therefore allow
+# 
+#     * 60 locations, limited by 60 requests per minute, because all of the requests happen
+#       within the first few seconds of the start of the 5 minute cycle.
+# 
+#     * 112 locations, calculated as (1 million req/month / 8298 req/month/location)
+
 import datetime
 import os
 import sys
@@ -34,7 +51,7 @@ _graph_specs = [
         'config': [
             'graph_title Temperature',
             'graph_category weather',
-            'graph_args --lower-limit -10 --upper-limit 40 --rigid',
+            'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
         ],
         'fields': [
@@ -162,6 +179,28 @@ _graph_specs = [
         ],
     },
 
+    {
+        'name': 'winddirection_deg',
+        'config': [
+            'graph_title Wind direction deg',
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
+            'graph_scale no',
+            'graph_vlabel Wind direction (°)',
+        ],
+        'fields': [
+            {
+                'name': 'wind_direction_deg',
+                'config': [
+                    'label Wind direction deg',
+                    'graph no',
+                ],
+                'fmt': '{:0.0f}',
+                'param': 'wind_direction_deg',
+            },
+        ],
+    },
+    
 ]
 
 
