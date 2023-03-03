@@ -91,7 +91,7 @@ _graph_specs = [
         'config': [
             'graph_title Pressure',
             'graph_category weather',
-            'graph_args --lower-limit 890 --upper-limit 1100 --rigid --y-grid 10:50',
+            'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
             'graph_scale no',
             'graph_vlabel hPa',
         ],
@@ -143,7 +143,7 @@ _graph_specs = [
         'config': [
             'graph_title Wind direction',
             'graph_category weather',
-            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
             'graph_order winddirection1',
@@ -184,7 +184,7 @@ _graph_specs = [
         'config': [
             'graph_title Wind direction deg',
             'graph_category weather',
-            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:90',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
         ],
@@ -193,7 +193,6 @@ _graph_specs = [
                 'name': 'wind_direction_deg',
                 'config': [
                     'label Wind direction deg',
-                    'graph no',
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'wind_direction_deg',
