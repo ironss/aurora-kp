@@ -47,6 +47,9 @@ _locations = {
     'Amundsen-Scott.us.place': ( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
 }
 
+plugin_name = os.path.basename(sys.argv[0])
+script_name, hostname = plugin_name.split('_')
+location = _locations[hostname]
 
 _graph_specs = [
     {   
@@ -56,15 +59,25 @@ _graph_specs = [
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
+            'graph_order air_temperature_awk={}:weatherkit_temperature.air_temperature'.format(hostname)
         ],
         'fields': [
             {
                 'name': 'air_temperature',
                 'config': [
-                    'label Air temperature (°C)',
+                    'label Air temperature OWM (°C)',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
+            },
+
+            {
+                'name': 'air_temperature_awk',
+                'config': [
+                    'label Air temperature AWK (°C)',
+                ],
+                'fmt': None,
+                'param': None,
             },
         ],
     },
@@ -255,10 +268,6 @@ def fetch(hostname, loc):
                 print('{}.value {}'.format(fld_name, value_fmt))
         print()
     
-
-plugin_name = os.path.basename(sys.argv[0])
-script_name, hostname = plugin_name.split('_')
-location = _locations[hostname]
 
 if len(sys.argv) > 1:
     cmd = sys.argv[1]
