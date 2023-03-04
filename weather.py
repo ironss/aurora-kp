@@ -72,7 +72,7 @@ if __name__ == '__main__':
         print(report)
         print()
        
-#        report = load_report(weatherkit.service, location_dict, secrets['weatherkit'])
-#        print(report)
-#        print()
+        report = load_report(weatherkit.service, location_dict, secrets['weatherkit'])
+        print(report)
+        print()
 
