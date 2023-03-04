@@ -1,6 +1,8 @@
-"""
-Utilities for weather forecast handling
-"""
+# Utilities for weather forecast handling
+#
+# service
+# location is a dict with keys name, lat, lon, alt, used to replace fields in the URL, URL params and headers
+# secrets is a dict with arbitrary keys that are used to replace fields in the URL, URL params and headers
 
 import collections
 import datetime
@@ -19,6 +21,7 @@ Weather_report = collections.namedtuple('Weather_report', [
     'wind_direction_deg',
     'wind_vector_E',
     'wind_vector_N',
+    'rain',
     'rain_1h_mm',
     'rain_3h_mm',
     'rain_24h_mm',
@@ -29,10 +32,9 @@ Weather_report = collections.namedtuple('Weather_report', [
 
 
 def _load_report(service, location, secrets):
-    location_dict = service['location'](location)
-    params = { k: v.format(**location_dict, **secrets) for k, v in service['url_params'].items() }
-    headers = { k: v.format(**location_dict, **secrets) for k, v in service['url_headers'].items() }
-    url = service['url_base'].format(**location_dict, **secrets)
+    params = { k: v.format(**location, **secrets) for k, v in service['url_params'].items() }
+    headers = { k: v.format(**location, **secrets) for k, v in service['url_headers'].items() }
+    url = service['url_base'].format(**location, **secrets)
     
     req = requests.get(url, headers=headers, params=params)
     return req.text
@@ -46,6 +48,7 @@ def load_report(service, location, secrets):
 if __name__ == '__main__':
     import json
     import openweathermap
+    import weatherkit
 
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
@@ -60,11 +63,16 @@ if __name__ == '__main__':
         #( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
         #( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
     ]
-    
+
     for location in locations:
-        report = load_report(openweathermap.service, location, secrets['openweathermap'])
-        print(*location)
+        location_dict = { k: location[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
+        print(location)
+        
+        report = load_report(openweathermap.service, location_dict, secrets['openweathermap'])
         print(report)
         print()
        
+#        report = load_report(weatherkit.service, location_dict, secrets['weatherkit'])
+#        print(report)
+#        print()
 

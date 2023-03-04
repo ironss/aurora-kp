@@ -2,8 +2,10 @@
 
 # Munin weather plugin
 # 
-# A Munin plugin that retrieves the current weather from OpenWeatherMap
+# A Munin plugin that retrieves the current weather from OpenWeatherMap and/or Apple WeatherKit
 # 
+# OpenWeatherMap
+# --------------
 # The OpenWeatherMap free plan is restricted to 
 #     * 60 requests per minute
 #     * 1 million requests per month
@@ -15,7 +17,16 @@
 #     * 60 locations, limited by 60 requests per minute, because all of the requests happen
 #       within the first few seconds of the start of the 5 minute cycle.
 # 
-#     * 112 locations, calculated as (1 million req/month / 8298 req/month/location)
+#     * 112 locations, calculated as (1 million req/month / 8928 req/month/location)
+#
+# Apple WeatherKit
+# ----------------
+# If you have a developer account, you can use Apple WeatherKit
+#
+# The developer account includes 500 K calls per month.
+# This restriction allows 56 locations, calculated as 500 K requests/month / 8928 req/month/location
+#
+
 
 import datetime
 import os
@@ -23,7 +34,7 @@ import sys
 
 import weather
 import openweathermap
-
+#import weatherkit
 
 verbose = True if os.getenv('MUNIN_DEBUG') == '1' else False
 
@@ -221,7 +232,8 @@ def config(hostname, location):
         print()
         
         
-def fetch(hostname, location):
+def fetch(hostname, loc):
+    location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
     secrets = {
         'api_key': os.environ['OWM_API_KEY']
     }

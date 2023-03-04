@@ -1,6 +1,6 @@
-"""
-Weather service file for OpenWeatherMap
-"""
+# Weather service file for OpenWeatherMap
+#
+
 
 import json
 import datetime
@@ -28,6 +28,7 @@ def _parse(report_text):
         report_owm['wind']['deg'],
         math.cos(math.radians(90-report_owm['wind']['deg'])),
         math.sin(math.radians(90-report_owm['wind']['deg'])),
+        None,  # rain
         None,  # rain 1h
         None,  # rain 3h
         None,  # rain 24h
@@ -36,13 +37,6 @@ def _parse(report_text):
         report_owm['visibility'],
     )
     return report
-
-_location_params = [
-    'name',
-    'lat',
-    'lon',
-    'alt',
-]
 
 service = {
     'name': 'OpenWeatherMap',
@@ -56,7 +50,6 @@ service = {
     'url_headers': {
     },
     'handler': _parse,
-    'location': lambda l: { n: l[i] for i, n in enumerate(_location_params) }
 }
 
 
@@ -77,12 +70,13 @@ if __name__ == '__main__':
         #( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
         #( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
     ]
-    
+
     debug = True
-    for location in locations:
-        print(*location)
+    for loc in locations:
+        location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
+        print(location)
+        
         report = weather.load_report(service, location, secrets['openweathermap'])
         print(report)
         print()
-
 
