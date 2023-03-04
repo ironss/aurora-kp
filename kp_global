@@ -52,7 +52,7 @@ def fetch():
 def config():
     print("host_name worldwide.place")
     print("graph_title Kp index")
-    print("graph_category other")
+    print("graph_category astro")
     print("graph_vlabel Kp")
     print("graph_args --lower-limit 0 --upper-limit 9 --rigid")
     print("kp_forecast.label Kp forecast")
