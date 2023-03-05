@@ -2,9 +2,13 @@ Lots of things to do with the Munin installation
 
 * Combine all of those nexeo_ plugins into a single multigraph plugin
 
-* Move the astro, tides and  weather astro plugins to constanza
+* Move the plugins to constanza
 
-* Move the places into group 'Places' rather than their 
+    * astro
+    * tides
+    * weather
+
+* [DONE] Move the places into group 'Places' rather than their domain suffix.
 
 * Change the weather_ plugins to openweathermap_
 
@@ -24,22 +28,37 @@ Lots of things to do with the Munin installation
 * Generate weatherkit JWT on-the-fly, rather than using the 400-day token that I generated
   manually and stored in /etc/munin/plugin-conf.d/weatherkit.
 
-* Add data attribution
+* [DONE] Add data attribution
 
 * Places of interest
 
-    * Christchurch Airport
-    * Lyttelton Port
-    * Nelson Airport
-    * Port Nelson
-    * Greymouth
-    * Auckland Airport
+    [X] Christchurch Airport -- just 'Christchurch'
+    [X] Lyttelton Port
+    [X] Nelson Airport -- Just 'Nelson'
+    [ ] Port Nelson -- just 'Nelson'
+    [ ] Greymouth
+    [ ] Auckland Airport
 
-    * Wichita, KA, US
+    [X] Wichita, KA, US
 
-    * Scott Base
-    * SANAE IV
-    * Amundsen-Scott Polar Station
-    * other Antarctic bases    
+    [X] Scott Base
+    [X] SANAE IV
+    [X] Amundsen-Scott Polar Station
+    [X] other Antarctic bases    
 
+
+
+Notes
+=====
+
+To move RRD files
+-----------------
+
+* Hard-link the RRD file(s) to the new place -- how do you know what they should be? Use your brain...
+
+* Adjust the Munin configuration
+
+* Restart Munin -- wait until 1 minute before the next cycle.
+
+* Remove the RRD file(s) from the old place.
 
