@@ -30,6 +30,7 @@ import openweathermap
 
 verbose = True if os.getenv('MUNIN_DEBUG') == '1' else False
 
+
 def verboselog(s):
     if verbose:
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
@@ -56,10 +57,11 @@ _graph_specs = [
         'name': 'temperature',
         'config': [
             'graph_title Temperature',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
-            'graph_order air_temperature_awk={}:weatherkit_temperature.air_temperature'.format(hostname)
+            'graph_order air_temperature air_temperature_awk=Places;{}:weatherkit_temperature.air_temperature'.format(hostname)
         ],
         'fields': [
             {
@@ -70,7 +72,6 @@ _graph_specs = [
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
             },
-
             {
                 'name': 'air_temperature_awk',
                 'config': [
@@ -86,18 +87,28 @@ _graph_specs = [
         'name': 'humidity',
         'config': [
             'graph_title Humidity',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
+            'graph_order air_humidity air_humidity_awk=Places;{hn}:weatherkit_humidity.air_humidity'.format(hn=hostname),
         ],
         'fields': [
             {
                 'name': 'air_humidity',
                 'config': [
-                    'label Air humidity (%RH)',
+                    'label Air humidity OWM (%RH)',
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'relative_humidity_pc',
+            },
+            {
+                'name': 'air_humidity_awk',
+                'config': [
+                    'label Air humidity AWK (%RH)',
+                ],
+                'fmt': None,
+                'param': None,
             },
         ],
     },
@@ -106,19 +117,29 @@ _graph_specs = [
         'name': 'pressure',
         'config': [
             'graph_title Pressure',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
             'graph_scale no',
             'graph_vlabel hPa',
+            'graph_order air_pressure air_pressure_awk=Places;{hn}:weatherkit_pressure.air_pressure'.format(hn=hostname),
         ],
         'fields': [
             {
                 'name': 'air_pressure',
                 'config': [
-                    'label Air pressure (hPa)',
+                    'label Air pressure OWM (hPa)',
                  ],
                  'fmt': '{:0.0f}',
                  'param': 'pressure_hPa',
+             },
+            {
+                'name': 'air_pressure_awk',
+                'config': [
+                    'label Air pressure AWK (hPa)',
+                 ],
+                 'fmt': None,
+                 'param': None,
              },
          ],
     },
@@ -127,16 +148,18 @@ _graph_specs = [
         'name': 'windspeed',
         'config': [
             'graph_title Wind speed',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 40 --rigid',
             'graph_scale no',
             'graph_vlabel knots',
+            'graph_order windspeed windgust windspeed_awk=Places;{hn}:weatherkit_windspeed.windspeed windgust_awk=Places;{hn}:weatherkit_windspeed.windgust'.format(hn=hostname),
         ],
         'fields': [
             {
                 'name': 'windspeed',
                 'config': [
-                    'label Wind speed (knots)',
+                    'label Wind speed OWM (knots)',
                     'cdef windspeed,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
@@ -145,11 +168,30 @@ _graph_specs = [
             {
                 'name': 'windgust',
                 'config': [
-                    'label Wind gust (knots)',
+                    'label Wind gust OWM (knots)',
                     'cdef windgust,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'wind_gust_m_s',
+            },
+
+            {
+                'name': 'windspeed_awk',
+                'config': [
+                    'label Wind speed AWK (knots)',
+                    'cdef windspeed_awk,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windgust_awk',
+                'config': [
+                    'label Wind gust AWK (knots)',
+                    'cdef windgust_awk,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
             },
         ],
     },
@@ -158,11 +200,12 @@ _graph_specs = [
         'name': 'winddirection',
         'config': [
             'graph_title Wind direction',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-            'graph_order winddirection1',
+            'graph_order winddirection windvector_E_awk=Places;{hn}:weatherkit_winddirection.windvector_E windvector_N_awk=Places;{hn}:weatherkit_winddirection.windvector_N'.format(hn=hostname),
         ],
         'fields': [
             {
@@ -184,10 +227,38 @@ _graph_specs = [
                 'param': 'wind_vector_N',
             },
             {
-                'name': 'winddirection1',
+                'name': 'winddirection',
                 'config': [
-                    'label Wind direction (°)',
+                    'label Wind direction OWM (°)',
                     'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+
+            {
+                'name': 'windvector_E_awk',
+                'config': [
+                    'label Wind vector E',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windvector_N_awk',
+                'config': [
+                    'label Wind vector N',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection_awk',
+                'config': [
+                    'label Wind direction AWK (°)',
+                    'cdef windvector_N_awk,windvector_E_awk,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
                 ],
                 'fmt': None,
                 'param': None,
@@ -199,10 +270,12 @@ _graph_specs = [
         'name': 'winddirection_deg',
         'config': [
             'graph_title Wind direction deg',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
+            'graph no',
         ],
         'fields': [
             {
@@ -216,6 +289,67 @@ _graph_specs = [
         ],
     },
     
+    {
+        'name': 'winddirection_smoothed',
+        'config': [
+            'graph_title Wind direction 2',
+            'graph_info Weather data provided by OpenWeather https://openweathermap.org/',
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
+            'graph_scale no',
+            'graph_vlabel Wind direction (°)',
+            'graph_order winddirection_deg=weather_winddirection_deg.wind_direction_deg windvector_E=weather_winddirection.windvector_E windvector_N=weather_winddirection.windvector_N'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'windvector_E',
+                'config': [
+                    'label Wind vector E',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windvector_N',
+                'config': [
+                    'label Wind vector N',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection',
+                'config': [
+                    'label Wind direction OWM (°)',
+                    'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection_smoothed',
+                'config': [
+                    'label Wind direction OWM smoothed (°)',
+                    'cdef windvector_N,3600,TRENDNAN,windvector_E,1800,TRENDNAN,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection_deg',
+                'config': [
+                    'label Wind direction deg OWM (°)',
+                    'cdef winddirection_deg,3600,TRENDNAN',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+
+        ],
+    },
+
 ]
 
 
