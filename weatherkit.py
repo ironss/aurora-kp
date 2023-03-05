@@ -27,7 +27,7 @@ def _parse(report_text):
         None,  # icon
         report_raw['currentWeather']['temperature'],
         report_raw['currentWeather']['pressure'],
-        report_raw['currentWeather']['windSpeed'] * 0.278,
+        report_raw['currentWeather']['windSpeed'] * 0.278,  # Reported as km/h, but stored as m/s
         report_raw['currentWeather']['windGust'] * 0.278,
         report_raw['currentWeather']['windDirection'],
         math.cos(math.radians(90-report_raw['currentWeather']['windDirection'])),
