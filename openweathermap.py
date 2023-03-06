@@ -29,7 +29,7 @@ def _parse(report_text):
         math.cos(math.radians(90-report_owm['wind']['deg'])),
         math.sin(math.radians(90-report_owm['wind']['deg'])),
         None,  # rain
-        None,  # rain 1h
+        report_owm['rain']['1h'] if 'rain' in report_owm else 0,  # rain 1h
         None,  # rain 3h
         None,  # rain 24h
         report_owm['main']['humidity'],
