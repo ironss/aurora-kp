@@ -1,0 +1,51 @@
+{
+    "Christchurch.nz.place": {
+        "name": "Christchurch, NZ.nz.place",
+        "lat" : -43.4821,
+        "lon" : 172.5500,
+        "alt" :  37
+    },
+    
+    "Lyttelton.nz.place": {
+        "name": "Lyttelton, NZ",
+        "lat" :   -43.6000,
+        "lon" :   172.7200,
+        "alt" :     0
+    },
+    
+    "Nelson.nz.place": {
+        "name": "Nelson, NZ",
+        "lat" :  -41.2980,
+        "lon" :  173.2210,
+        "alt" :    5
+    },
+    
+    "Scott-Base.nz.place": {
+        "name": "Scott Base, NZ",
+        "lat" :  -77.8491,
+        "lon" :  166.7682,
+        "alt" :   10
+    },
+    
+    "SANAE4.za.place": {
+        "name": "SANAE IV, ZA",
+        "lat" :  -71.6724,
+        "lon" :   -2.8249,
+        "alt" :  850
+    },
+
+    "Wichita.ka.us.place": {
+        "name": "Wichita, KA, US",
+        "lat" :  37.6889,
+        "lon" : -97.3361,
+        "alt" : 400
+    },
+    
+    "Amundsen-Scott.us.place": {
+        "name": "Amundsen-Scott Base, US", 
+        "lat" :  -90.0000,
+        "lon" :    0.0000,
+        "alt" : 2835
+    }
+}
+
