@@ -227,7 +227,7 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-#            'graph no',
+            'graph no',
         ],
         'fields': [
             {
@@ -249,7 +249,7 @@ def config(hostname, location):
 
     for gr in _graph_specs:
         gr_name = gr['name']
-        print('multigraph {}_{}'.format(script_name, gr_name))
+        print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
         
         for cfg in gr['config']:
             print(cfg)
