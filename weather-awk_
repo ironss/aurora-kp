@@ -12,6 +12,7 @@
 
 
 import datetime
+import json
 import os
 import sys
 
@@ -26,51 +27,35 @@ def verboselog(s):
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
 
-_locations = {
-    'Christchurch.nz.place'  : ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
-    'Lyttelton.nz.place'     : ( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
-    'Nelson.nz.place'        : ( 'Nelson, NZ'             , -41.2980,  173.2210,    5),
-    'Scott-Base.nz.place'    : ( 'Scott Base, NZ'         , -77.8491,  166.7682,   10),
-
-    'SANAE4.za.place'        : ( 'SANAE IV, ZA'           , -71.6724,   -2.8249,  850),
-
-    'Wichita.ka.us.place'    : ( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
-    'Amundsen-Scott.us.place': ( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
-}
+locations_fn = '/var/lib/munin/locations.json'
+with open(locations_fn) as f:
+    locations = json.load(f)
 
 plugin_name = os.path.basename(sys.argv[0])
 script_name, hostname = plugin_name.split('_')
-location = _locations[hostname]
+location = locations[hostname]
+
+attribution = 'Weather data provided by Apple Weather'
 
 
 _graph_specs = [
     {   
         'name': 'temperature',
         'config': [
-            'graph_title Temperature AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Temperature',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
-            'graph_order air_temperature air_temperature_owm=Places;{hn}:weather_temperature.air_temperature'.format(hn=hostname),
-            'graph no',
         ],
         'fields': [
             {
                 'name': 'air_temperature',
                 'config': [
-                    'label Air temperature AWK (°C)',
+                    'label Air temperature (°C)',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
-            },
-            {
-                'name': 'air_temperature_owm',
-                'config': [
-                    'label Air temperature OWM (°C)',
-                ],
-                'fmt': None,
-                'param': None,
             },
         ],
     },
@@ -222,6 +207,7 @@ _graph_specs = [
                 'fmt': None,
                 'param': None,
             },
+
             {
                 'name': 'windvector_E_owm',
                 'config': [
@@ -297,7 +283,6 @@ def config(hostname, location):
         
         
 def fetch(hostname, loc):
-    location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
     secrets = {
         'auth_token': os.environ['AWK_AUTH_TOKEN']
     }

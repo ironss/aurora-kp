@@ -1,0 +1,127 @@
+Munin plugins to retrieve online weather forecasts, etc
+
+* Weather forecasts from OpenWeatherMap
+* Weather forecasts from Apple WeatherKit
+* Solar Kp index forecast from NOAA
+
+
+Files
+=====
+
+* weather.py        retrieve current weather from a service provider and create 
+  a standard weather report
+  
+* weather_owm.py    settings for OpenWeatherMap
+* weather_awk.py    settings for Apple WeatherKit
+
+* weather_          Munin plugin to present weather from multiple providers
+* weather_owm_      Munin plugin to retrieve weather from OpenWeatherMap
+* weather_awk_      Munin plugin to retrieve weather from Apple WeatherKit
+
+* /etc/munin/plugins/openweathermap
+* /etc/munin/plugins/weatherkit
+                    Configuration files to specify secrets, etc
+                    Note that these are restricted access, so relatively
+                    safe from casual snooping
+
+
+OpenWeatherMap
+==============
+
+* Create an account with OpenWeatherMap
+
+* Create an API key
+
+* Modify the configuration file /etc/munin/plugin-conf.d/weather_owm
+
+* Create and/or modify the locations file locations.json
+
+* Symlink the Munin plugin as required for each location
+
+
+WeatherKit
+==========
+
+* See instructions on Apple Developer website to 
+
+    * register for Apple WeatherKit
+    
+    * generate a private key
+
+* Create a long-lasting JWT
+
+    * TODO: generate JWT from the private key on-the-fly
+
+* Modify the configuration file /etc/munin/plugin-conf.d/weather_owm
+
+* Create and/or modify the locations file locations.json
+
+* Symlink the Munin plugin as required for each location
+
+
+
+TODO
+====
+
+* Combine all of those nexeo_ plugins into a single multigraph plugin
+
+* Move the plugins to constanza
+
+    * astro
+    * tides
+    * weather
+
+* [DONE] Move the places into group 'Places' rather than their domain suffix.
+
+* Change the weather_ plugins to openweathermap_
+
+    * and ensure that the data moves too
+
+* Create a new weather_ plugin that borrows data from weatherkit_ and openweathermap_ plugins
+
+    * this new plugin will not actually read data ('update no'), but will use 'graph_order'
+      to borrow the data
+
+* Think of a way to store secrets for weatherkit and openweathermap. Currently, stored in 
+  /etc/munin/plugin-conf.d/weatherkit etc
+
+* Think of a way to share location data between plugins, rather than copy-paste. Perhaps
+  in /etc/munin/plugin-conf.d/locations as a JSON object? Perhaps somewhere in /usr/share?
+
+* Generate weatherkit JWT on-the-fly, rather than using the 400-day token that I generated
+  manually and stored in /etc/munin/plugin-conf.d/weatherkit.
+
+* [DONE] Add data attribution
+
+* Places of interest
+
+    [X] Christchurch Airport -- just 'Christchurch'
+    [X] Lyttelton Port
+    [X] Nelson Airport -- Just 'Nelson'
+    [ ] Port Nelson -- just 'Nelson'
+    [ ] Greymouth
+    [ ] Auckland Airport
+
+    [X] Wichita, KA, US
+
+    [X] Scott Base
+    [X] SANAE IV
+    [X] Amundsen-Scott Polar Station
+    [X] other Antarctic bases    
+
+
+
+Notes
+=====
+
+To move RRD files
+-----------------
+
+* Hard-link the RRD file(s) to the new place -- how do you know what they should be? Use your brain...
+
+* Adjust the Munin configuration
+
+* Restart Munin -- wait until 1 minute before the next cycle.
+
+* Remove the RRD file(s) from the old place.
+
