@@ -1,4 +1,4 @@
-[weatherkit_*]
+[weather-awk_*]
     env.AWK_AUTH_TOKEN {{ auth_token }} 
     env.WEATHER_LOCATIONS /var/lib/munin/locations.json
 

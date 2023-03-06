@@ -1,4 +1,4 @@
-[weather_owm_*]
+[weather-owm_*]
     env.OWM_API_KEY   {{ api_key }}
     env.WEATHER_LOCATIONS /var/lib/munin/locations.json
 
