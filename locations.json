@@ -20,6 +20,13 @@
         "alt" :    5
     },
     
+    "Rarotonga.ck.place": {
+        "name": "Rarotonga, CK",
+        "lat" :  -21.206944,
+        "lon" : -159.770833,
+        "alt" : 0
+    },
+    
     "Scott-Base.nz.place": {
         "name": "Scott Base, NZ",
         "lat" :  -77.8491,
