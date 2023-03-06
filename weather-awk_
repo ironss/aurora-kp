@@ -27,7 +27,7 @@ def verboselog(s):
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
 
-locations_fn = '/var/lib/munin/locations.json'
+locations_fn = os.getenv('WEATHER_LOCATIONS')
 with open(locations_fn) as f:
     locations = json.load(f)
 
@@ -63,12 +63,11 @@ _graph_specs = [
     {   
         'name': 'humidity',
         'config': [
-            'graph_title Humidity AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Humidity',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
-            'graph no',
         ],
         'fields': [
             {
@@ -82,34 +81,66 @@ _graph_specs = [
         ],
     },
 
+    {   
+        'name': 'rain',
+        'config': [
+            'graph_title Rain',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 10',
+            'graph_vlabel Rainfall (mm)',
+        ],
+        'fields': [
+            {
+                'name': 'rain_1h',
+                'config': [
+                    'label Rainfall 1h (mm)',
+                ],
+                'fmt': '{:0.2f}',
+                'param': 'rain_1h_mm',
+            },
+        ],
+    },
+
+    {   
+        'name': 'cloud',
+        'config': [
+            'graph_title Cloud cover',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 100 --rigid',
+            'graph_vlabel Cloud cover (%)',
+        ],
+        'fields': [
+            {
+                'name': 'cloud_all',
+                'config': [
+                    'label Cloud cover all levels OWM (%)',
+                ],
+                'fmt': '{:0.0f}',
+                'param': 'cloud_cover_pc',
+            },
+        ],
+    },
+
     {
         'name': 'pressure',
         'config': [
-            'graph_title Pressure AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Pressure',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
             'graph_scale no',
             'graph_vlabel hPa',
-            'graph_order air_pressure air_pressure_owm=Places;{hn}:weather_pressure.air_pressure'.format(hn=hostname),
-            'graph no',
         ],
         'fields': [
             {
                 'name': 'air_pressure',
                 'config': [
-                    'label Air pressure AWK (hPa)',
+                    'label Air pressure (hPa)',
                  ],
                  'fmt': '{:0.0f}',
                  'param': 'pressure_hPa',
-             },
-             {
-                'name': 'air_pressure_owm',
-                'config': [
-                    'label Air pressure OWM (hPa)',
-                 ],
-                 'fmt': None,
-                 'param': None,
              },
          ],
     },
@@ -117,20 +148,18 @@ _graph_specs = [
     {
         'name': 'windspeed',
         'config': [
-            'graph_title Wind speed AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Wind speed',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 40 --rigid',
             'graph_scale no',
             'graph_vlabel knots',
-            'graph_order windspeed windgust windspeed_owm=Places;{hn}:weather_windspeed.windspeed windgust_owm=Places;{hn}:weather_windspeed.windgust'.format(hn=hostname),
-            'graph no',
         ],
         'fields': [
             {
                 'name': 'windspeed',
                 'config': [
-                    'label Wind speed AWK (knots)',
+                    'label Wind speed (knots)',
                     'cdef windspeed,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
@@ -139,30 +168,11 @@ _graph_specs = [
             {
                 'name': 'windgust',
                 'config': [
-                    'label Wind gust AWK (knots)',
+                    'label Wind gust (knots)',
                     'cdef windgust,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'wind_gust_m_s',
-            },
-            
-            {
-                'name': 'windspeed_owm',
-                'config': [
-                    'label Wind speed OWM (knots)',
-                    'cdef windspeed_owm,1.944,*',
-                ],
-                'fmt': None,
-                'param': None,
-            },
-            {
-                'name': 'windgust_owm',
-                'config': [
-                    'label Wind gust OWM (knots)',
-                    'cdef windgust_owm,1.944,*',
-                ],
-                'fmt': None,
-                'param': None,
             },
         ],
     },
@@ -170,14 +180,12 @@ _graph_specs = [
     {
         'name': 'winddirection',
         'config': [
-            'graph_title Wind direction AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Wind direction',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-            'graph_order winddirection windvector_E_owm=Places;{hn}:weather_winddirection.windvector_E windvector_N_owm=Places;{hn}:weather_winddirection.windvector_N winddirection_owm'.format(hn=hostname),
-            'graph no',
         ],
         'fields': [
             {
@@ -201,36 +209,8 @@ _graph_specs = [
             {
                 'name': 'winddirection',
                 'config': [
-                    'label Wind direction AWK (°)',
+                    'label Wind direction (°)',
                     'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
-                ],
-                'fmt': None,
-                'param': None,
-            },
-
-            {
-                'name': 'windvector_E_owm',
-                'config': [
-                    'label Wind vector E OWM',
-                    'graph no',
-                ],
-                'fmt': None,
-                'param': None,
-            },
-            {
-                'name': 'windvector_N_owm',
-                'config': [
-                    'label Wind vector N OWM',
-                    'graph no',
-                ],
-                'fmt': None,
-                'param': None,
-            },
-            {
-                'name': 'winddirection_owm',
-                'config': [
-                    'label Wind direction OWM (°)',
-                    'cdef windvector_N_owm,windvector_E_owm,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
                 ],
                 'fmt': None,
                 'param': None,
@@ -241,13 +221,13 @@ _graph_specs = [
     {
         'name': 'winddirection_deg',
         'config': [
-            'graph_title Wind direction deg AWK',
-            'graph_info Weather data provided by Apple Weather',
+            'graph_title Wind direction deg',
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-            'graph no',
+#            'graph no',
         ],
         'fields': [
             {
@@ -260,7 +240,6 @@ _graph_specs = [
             },
         ],
     },
-    
 ]
 
 
