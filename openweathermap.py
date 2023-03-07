@@ -12,29 +12,29 @@ import weather
 debug = False
 
 def _parse(report_text):
-    report_owm = json.loads(report_text)
+    report_raw = json.loads(report_text)
     if debug:
-        print(report_owm)
+        print(report_raw)
         
     report = weather.Weather_report(
-        datetime.datetime.fromtimestamp(report_owm['dt'], tz=datetime.timezone.utc),
-        report_owm['weather'][0]['main'],
-        report_owm['weather'][0]['id'],
-        report_owm['weather'][0]['icon'],
-        report_owm['main']['temp'],
-        report_owm['main']['pressure'],
-        report_owm['wind']['speed'],
-        report_owm['wind']['gust'] if 'gust' in report_owm['wind'] else None,
-        report_owm['wind']['deg'],
-        math.cos(math.radians(90-report_owm['wind']['deg'])),
-        math.sin(math.radians(90-report_owm['wind']['deg'])),
+        datetime.datetime.fromtimestamp(report_raw['dt'], tz=datetime.timezone.utc),
+        report_raw['weather'][0]['main'],
+        report_raw['weather'][0]['id'],
+        report_raw['weather'][0]['icon'],
+        report_raw['main']['temp'],
+        report_raw['main']['pressure'],
+        report_raw['wind']['speed'],
+        report_raw['wind']['gust'] if 'gust' in report_raw['wind'] else None,
+        report_raw['wind']['deg'],
+        math.cos(math.radians(90-report_raw['wind']['deg'])),
+        math.sin(math.radians(90-report_raw['wind']['deg'])),
         None,  # rain
-        report_owm['rain']['1h'] if 'rain' in report_owm else 0,  # rain 1h
+        report_raw['rain']['1h'] if 'rain' in report_raw else 0,  # rain 1h
         None,  # rain 3h
         None,  # rain 24h
-        report_owm['main']['humidity'],
-        report_owm['clouds']['all'],
-        report_owm['visibility'],
+        report_raw['main']['humidity'],
+        report_raw['clouds']['all'],
+        report_raw['visibility'],
     )
     return report
 
