@@ -73,55 +73,39 @@ TODO
 
 * [DONE] Move the places into group 'Places' rather than their domain suffix.
 
-* Change the weather_ plugins to openweathermap_
+* [DONE] Change the weather_ plugins to openweathermap_
 
-    * and ensure that the data moves too
+    * [CANCELLED] and ensure that the data moves too -- only 3 or 4 days, so just abandoned the weather data
 
-* Create a new weather_ plugin that borrows data from weatherkit_ and openweathermap_ plugins
+* [DONE] Create a new weather_ plugin that borrows data from weatherkit_ and openweathermap_ plugins
 
-    * this new plugin will not actually read data ('update no'), but will use 'graph_order'
+    * [DONE] this new plugin will not actually read data ('update no'), but will use 'graph_order'
       to borrow the data
 
-* Think of a way to store secrets for weatherkit and openweathermap. Currently, stored in 
+* [CANCELLED] Think of a way to store secrets for weatherkit and openweathermap. Currently, stored in 
   /etc/munin/plugin-conf.d/weatherkit etc
 
-* Think of a way to share location data between plugins, rather than copy-paste. Perhaps
-  in /etc/munin/plugin-conf.d/locations as a JSON object? Perhaps somewhere in /usr/share?
+* [DONE] Think of a way to share location data between plugins
+
+    * stored in /var/lib/munin/locations.json
 
 * Generate weatherkit JWT on-the-fly, rather than using the 400-day token that I generated
   manually and stored in /etc/munin/plugin-conf.d/weatherkit.
 
 * [DONE] Add data attribution
 
-* Places of interest
+* [DONE] Places of interest
 
-    [X] Christchurch Airport -- just 'Christchurch'
-    [X] Lyttelton Port
-    [X] Nelson Airport -- Just 'Nelson'
-    [ ] Port Nelson -- just 'Nelson'
+    [X] Christchurch -- weather: airport
+    [X] Lyttelton -- weather:port, tides: port
+    [X] Nelson -- weather: airport, tide:port
     [ ] Greymouth
-    [ ] Auckland Airport
+    [ ] Auckland
 
-    [X] Wichita, KA, US
+    [X] Wichita, KA, US -- weather
 
-    [X] Scott Base
-    [X] SANAE IV
-    [X] Amundsen-Scott Polar Station
-    [X] other Antarctic bases    
-
-
-
-Notes
-=====
-
-To move RRD files
------------------
-
-* Hard-link the RRD file(s) to the new place -- how do you know what they should be? Use your brain...
-
-* Adjust the Munin configuration
-
-* Restart Munin -- wait until 1 minute before the next cycle.
-
-* Remove the RRD file(s) from the old place.
+    [X] Scott Base -- weather
+    [X] SANAE IV -- weather
+    [X] Amundsen-Scott Polar Station -- weather
+    [ ] other Antarctic bases    
 
