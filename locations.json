@@ -8,6 +8,7 @@
     
     "Lyttelton.nz.place": {
         "name": "Lyttelton, NZ",
+        "port": [ "LINZ", "Lyttelton" ],
         "lat" :   -43.6000,
         "lon" :   172.7200,
         "alt" :     0
@@ -15,6 +16,7 @@
     
     "Nelson.nz.place": {
         "name": "Nelson, NZ",
+        "port": [ "LINZ", "Nelson" ],
         "lat" :  -41.2980,
         "lon" :  173.2210,
         "alt" :    5
@@ -29,12 +31,13 @@
     
     "Scott-Base.nz.place": {
         "name": "Scott Base, NZ",
+        "port": [ "LINZ", "Scott Base" ],
         "lat" :  -77.8491,
         "lon" :  166.7682,
         "alt" :   10
     },
     
-    "SANAE4.za.place": {
+    "SANAE-IV.za.place": {
         "name": "SANAE IV, ZA",
         "lat" :  -71.6724,
         "lon" :   -2.8249,
@@ -48,11 +51,10 @@
         "alt" : 400
     },
     
-    "Amundsen-Scott.us.place": {
-        "name": "Amundsen-Scott Base, US", 
+    "Amundsen-Scott-Polar-Station.us.place": {
+        "name": "Amundsen-Scott Polar Station, US", 
         "lat" :  -90.0000,
         "lon" :    0.0000,
         "alt" : 2835
     }
 }
-
