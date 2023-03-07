@@ -12,7 +12,6 @@ import sys
 
 
 verbose = True if os.getenv('MUNIN_DEBUG') == '1' else False
-
 def verboselog(s):
     if verbose:
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
@@ -28,6 +27,9 @@ location = locations[hostname]
 
 attribution = 'Weather data provided by Apple Weather and OpenWeatherMap'
 
+#graph = os.getenv('WEATHER_SHOW_GRAPH')
+graph_str = 'graph yes' # if graph else 'graph no'
+
 
 _graph_specs = [
     {
@@ -39,6 +41,7 @@ _graph_specs = [
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
             'graph_order air_temperature_owm={hn}:weather_owm_temperature.air_temperature  air_temperature_awk={hn}:weather_awk_temperature.air_temperature'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -69,6 +72,7 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
             'graph_order air_humidity_owm={hn}:weather_owm_humidity.air_humidity  air_humidity_awk={hn}:weather_awk_humidity.air_humidity'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -99,6 +103,7 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 10 --rigid',
             'graph_vlabel Rainfall (mm/h)',
             'graph_order rain_1h_owm={hn}:weather_owm_rain.rain_1h rain_1h_awk={hn}:weather_awk_rain.rain_1h'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -129,6 +134,7 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Cloud cover (%)',
             'graph_order cloud_all_owm={hn}:weather_owm_cloud.cloud_all cloud_all_awk={hn}:weather_awk_cloud.cloud_all'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -159,6 +165,7 @@ _graph_specs = [
             'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
             'graph_vlabel Pressure (hPa)',
             'graph_order air_pressure_owm={hn}:weather_owm_pressure.air_pressure air_pressure_awk={hn}:weather_awk_pressure.air_pressure'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -190,6 +197,7 @@ _graph_specs = [
             'graph_scale no',
             'graph_vlabel knots',
             'graph_order windspeed_owm={hn}:weather_owm_windspeed.windspeed windgust_owm={hn}:weather_owm_windspeed.windgust windspeed_awk={hn}:weather_awk_windspeed.windspeed windgust_awk={hn}:weather_awk_windspeed.windgust'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
@@ -242,6 +250,7 @@ _graph_specs = [
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
             'graph_order windvector_E_owm={hn}:weather_owm_winddirection.windvector_E windvector_N_owm={hn}:weather_owm_winddirection.windvector_N windvector_E_awk={hn}:weather_awk_winddirection.windvector_E windvector_N_awk={hn}:weather_awk_winddirection.windvector_N'.format(hn=hostname),
+            graph_str,
         ],
         'fields': [
             {
