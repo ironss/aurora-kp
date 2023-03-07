@@ -1,0 +1,101 @@
+#! /usr/bin/python3
+
+# Munin weather plugin
+#
+# A Munin plugin that combines weather data from multiple weather providers
+#
+
+
+import json
+import os
+import sys
+
+
+verbose = True if os.getenv('MUNIN_DEBUG') == '1' else False
+
+def verboselog(s):
+    if verbose:
+        sys.stderr.write('{}: {}\n'.format(plugin_name, s))
+
+
+locations_fn = '/var/lib/munin/locations.json'
+with open(locations_fn) as f:
+    locations = json.load(f)
+
+plugin_name = os.path.basename(sys.argv[0])
+script_name, hostname = plugin_name.split('_')
+location = locations[hostname]
+
+attribution = 'Weather data provided by Apple Weather and OpenWeatherMap'
+
+
+_graph_specs = [
+    {   
+        'name': 'temperature',
+        'config': [
+            'graph_title Temperature',
+            'graph_info{att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit -10 --upper-limit 40',
+            'graph_vlabel °C',
+            'graph_order air_temperature_owm={hn}:weather-owm_temperature.air_temperature  air_temperature_awk={hn}:weather-awk_temperature.air_temperature'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'air_temperature_owm',
+                'config': [
+                    'label Air temperature OWM (°C)',
+                ],
+                'fmt': '{:0.1f}',
+                'param': 'temperature_C',
+            },
+            {
+                'name': 'air_temperature_awk',
+                'config': [
+                    'label Air temperature AWK (°C)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+]
+
+
+def config(hostname, location):
+    print("host_name {}".format(hostname))
+    print()
+
+    for gr in _graph_specs:
+        gr_name = gr['name']
+        print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
+        
+        for cfg in gr['config']:
+            print(cfg)
+        
+        for fld in gr['fields']:
+            fld_name = fld['name']
+            for cfg in fld['config']:
+                print('{}.{}'.format(fld_name, cfg))
+        print()
+
+
+def fetch(hostname, location):
+    pass
+
+
+if len(sys.argv) > 1:
+    cmd = sys.argv[1]
+    if cmd == 'config':
+        config(hostname, location)
+        if True:  # if we support dirtyconfig
+            fetch(hostname, location)
+        sys.exit(0)
+
+    if cmd == 'suggest':
+        sys.exit(0)
+
+    verboselog('unknown argument "{}"'.format(cmd))
+    exit(1)
+
+fetch(hostname, location)
