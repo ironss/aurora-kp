@@ -36,6 +36,7 @@ script_name, hostname = plugin_name.split('_')
 location = locations[hostname]
 
 attribution = 'Weather data provided by Apple Weather'
+abbrev = 'AWK'
 
 
 _graph_specs = [
@@ -52,7 +53,7 @@ _graph_specs = [
             {
                 'name': 'air_temperature',
                 'config': [
-                    'label Air temperature (°C)',
+                    'label Air temperature {} (°C)'.format(abbrev),
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
@@ -73,7 +74,7 @@ _graph_specs = [
             {
                 'name': 'air_humidity',
                 'config': [
-                    'label Air humidity (%RH)',
+                    'label Air humidity {} (%RH)'.format(abbrev),
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'relative_humidity_pc',
@@ -94,7 +95,7 @@ _graph_specs = [
             {
                 'name': 'rain_1h',
                 'config': [
-                    'label Rainfall 1h (mm)',
+                    'label Rainfall 1h {} (mm)'.format(abbrev),
                 ],
                 'fmt': '{:0.2f}',
                 'param': 'rain_1h_mm',
@@ -115,7 +116,7 @@ _graph_specs = [
             {
                 'name': 'cloud_all',
                 'config': [
-                    'label Cloud cover all levels OWM (%)',
+                    'label Cloud cover all levels {} (%)'.format(abbrev),
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'cloud_cover_pc',
@@ -137,7 +138,7 @@ _graph_specs = [
             {
                 'name': 'air_pressure',
                 'config': [
-                    'label Air pressure (hPa)',
+                    'label Air pressure {} (hPa)'.format(abbrev),
                  ],
                  'fmt': '{:0.0f}',
                  'param': 'pressure_hPa',
@@ -159,7 +160,7 @@ _graph_specs = [
             {
                 'name': 'windspeed',
                 'config': [
-                    'label Wind speed (knots)',
+                    'label Wind speed {} (knots)'.format(abbrev),
                     'cdef windspeed,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
@@ -168,7 +169,7 @@ _graph_specs = [
             {
                 'name': 'windgust',
                 'config': [
-                    'label Wind gust (knots)',
+                    'label Wind gust {} (knots)'.format(abbrev),
                     'cdef windgust,1.944,*',
                 ],
                 'fmt': '{:0.1f}',
@@ -191,7 +192,7 @@ _graph_specs = [
             {
                 'name': 'windvector_E',
                 'config': [
-                    'label Wind vector E',
+                    'label Wind vector {} E'.format(abbrev),
                     'graph no',
                 ],
                 'fmt': '{:0.3f}',
@@ -200,7 +201,7 @@ _graph_specs = [
             {
                 'name': 'windvector_N',
                 'config': [
-                    'label Wind vector N',
+                    'label Wind vector {} N'.format(abbrev),
                     'graph no',
                 ],
                 'fmt': '{:0.3f}',
@@ -209,7 +210,7 @@ _graph_specs = [
             {
                 'name': 'winddirection',
                 'config': [
-                    'label Wind direction (°)',
+                    'label Wind direction {} (°)'.format(abbrev),
                     'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
                 ],
                 'fmt': None,
@@ -233,7 +234,7 @@ _graph_specs = [
             {
                 'name': 'wind_direction_deg',
                 'config': [
-                    'label Wind direction deg',
+                    'label Wind direction deg {} (°)'.format(abbrev),
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'wind_direction_deg',
