@@ -30,11 +30,11 @@ attribution = 'Weather data provided by Apple Weather and OpenWeatherMap'
 
 
 _graph_specs = [
-    {   
+    {
         'name': 'temperature',
         'config': [
             'graph_title Temperature',
-            'graph_info{att}'.format(att=attribution),
+            'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
@@ -46,8 +46,8 @@ _graph_specs = [
                 'config': [
                     'label Air temperature OWM (°C)',
                 ],
-                'fmt': '{:0.1f}',
-                'param': 'temperature_C',
+                'fmt': None,
+                'param': None,
             },
             {
                 'name': 'air_temperature_awk',
@@ -59,6 +59,249 @@ _graph_specs = [
             },
         ],
     },
+
+    {   
+        'name': 'humidity',
+        'config': [
+            'graph_title Humidity',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 100 --rigid',
+            'graph_vlabel Humidity (%RH)',
+            'graph_order air_humidity_owm={hn}:weather_owm_humidity.air_humidity  air_humidity_awk={hn}:weather_awk_humidity.air_humidity'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'air_humidity_owm',
+                'config': [
+                    'label Air humidity OWM (%RH)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'air_humidity_awk',
+                'config': [
+                    'label Air humidity AWK (%RH)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
+    {   
+        'name': 'rain',
+        'config': [
+            'graph_title Rain',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 10 --rigid',
+            'graph_vlabel Rainfall (mm/h)',
+            'graph_order rain_1h_owm={hn}:weather_owm_rain.rain_1h rain_1h_awk={hn}:weather_awk_rain.rain_1h'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'rain_1h_owm',
+                'config': [
+                    'label Rainfall OWM (mm/h)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'rain_1h_awk',
+                'config': [
+                    'label Rainfall AWK (mm/h)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
+    {   
+        'name': 'cloud',
+        'config': [
+            'graph_title Cloud cover',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 100 --rigid',
+            'graph_vlabel Cloud cover (%)',
+            'graph_order cloud_all_owm={hn}:weather_owm_cloud.cloud_all cloud_all_awk={hn}:weather_awk_cloud.cloud_all'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'cloud_all_owm',
+                'config': [
+                    'label Cloud cover all levels OWM (%)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'cloud_all_awk',
+                'config': [
+                    'label Cloud cover all levels AWK (%)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
+    {
+        'name': 'pressure',
+        'config': [
+            'graph_title Pressure',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
+            'graph_vlabel Pressure (hPa)',
+            'graph_order air_pressure_owm={hn}:weather_owm_pressure.air_pressure air_pressure_awk={hn}:weather_awk_pressure.air_pressure'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'air_pressure_owm',
+                'config': [
+                    'label Air pressure OWM (hPa)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'air_pressure_awk',
+                'config': [
+                    'label Air pressure AWK (hPa)',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
+    {
+        'name': 'windspeed',
+        'config': [
+            'graph_title Wind speed',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 40 --rigid',
+            'graph_scale no',
+            'graph_vlabel knots',
+            'graph_order windspeed_owm={hn}:weather_owm_windspeed.windspeed windgust_owm={hn}:weather_owm_windspeed.windgust windspeed_awk={hn}:weather_awk_windspeed.windspeed windgust_awk={hn}:weather_awk_windspeed.windgust'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'windspeed_owm',
+                'config': [
+                    'label Wind speed OWM (knots)',
+                    'cdef windspeed_owm,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windgust_owm',
+                'config': [
+                    'label Wind gust OWM (knots)',
+                    'cdef windgust_owm,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+
+            {
+                'name': 'windspeed_awk',
+                'config': [
+                    'label Wind speed AWK (knots)',
+                    'cdef windspeed_awk,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windgust_awk',
+                'config': [
+                    'label Wind gust AWK (knots)',
+                    'cdef windgust_awk,1.944,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
+    {
+        'name': 'winddirection',
+        'config': [
+            'graph_title Wind direction',
+            'graph_info {att}'.format(att=attribution),
+            'graph_category weather',
+            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
+            'graph_scale no',
+            'graph_vlabel Wind direction (°)',
+            'graph_order windvector_E_owm={hn}:weather_owm_winddirection.windvector_E windvector_N_owm={hn}:weather_owm_winddirection.windvector_N windvector_E_awk={hn}:weather_awk_winddirection.windvector_E windvector_N_awk={hn}:weather_awk_winddirection.windvector_N'.format(hn=hostname),
+        ],
+        'fields': [
+            {
+                'name': 'windvector_E_owm',
+                'config': [
+                    'label Wind vector E',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windvector_N_owm',
+                'config': [
+                    'label Wind vector N',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection_owm',
+                'config': [
+                    'label Wind direction OWM (°)',
+                    'cdef windvector_N_owm,windvector_E_owm,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+
+            {
+                'name': 'windvector_E_awk',
+                'config': [
+                    'label Wind vector E',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'windvector_N_awk',
+                'config': [
+                    'label Wind vector N',
+                    'graph no',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+            {
+                'name': 'winddirection_awk',
+                'config': [
+                    'label Wind direction AWK (°)',
+                    'cdef windvector_N_awk,windvector_E_awk,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                ],
+                'fmt': None,
+                'param': None,
+            },
+        ],
+    },
+
 ]
 
 
