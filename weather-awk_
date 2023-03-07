@@ -270,7 +270,7 @@ def fetch(hostname, loc):
 
     for gr in _graph_specs:
         gr_name = gr['name']
-        print('multigraph {}_{}'.format(script_name, gr_name))
+        print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
         
         for fld in gr['fields']:
             fld_name = fld['name']
