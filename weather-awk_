@@ -89,16 +89,16 @@ _graph_specs = [
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 10',
-            'graph_vlabel Rainfall (mm)',
+            'graph_vlabel Rainfall (mm/h)',
         ],
         'fields': [
             {
                 'name': 'rain_1h',
                 'config': [
-                    'label Rainfall 1h {} (mm)'.format(abbrev),
+                    'label Rainfall {} (mm/h)'.format(abbrev),
                 ],
                 'fmt': '{:0.2f}',
-                'param': 'rain_1h_mm',
+                'param': 'rain_intensity_mm_h',
             },
         ],
     },

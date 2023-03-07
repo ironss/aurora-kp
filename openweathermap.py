@@ -28,10 +28,8 @@ def _parse(report_text):
         report_raw['wind']['deg'],
         math.cos(math.radians(90-report_raw['wind']['deg'])),
         math.sin(math.radians(90-report_raw['wind']['deg'])),
-        None,  # rain
+        None,
         report_raw['rain']['1h'] if 'rain' in report_raw else 0,  # rain 1h
-        None,  # rain 3h
-        None,  # rain 24h
         report_raw['main']['humidity'],
         report_raw['clouds']['all'],
         report_raw['visibility'],

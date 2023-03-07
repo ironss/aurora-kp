@@ -17,6 +17,7 @@ debug = False
 
 def _parse(report_text):
     report_raw = json.loads(report_text)
+    #print(report_raw)
     if debug:
         print(report_raw)
 
@@ -32,10 +33,8 @@ def _parse(report_text):
         report_raw['currentWeather']['windDirection'],
         math.cos(math.radians(90-report_raw['currentWeather']['windDirection'])),
         math.sin(math.radians(90-report_raw['currentWeather']['windDirection'])),
+        None,
         report_raw['currentWeather']['precipitationIntensity'],
-        None,  # rain 1h
-        None,  # rain 3h
-        None,  # rain 24h
         report_raw['currentWeather']['humidity'] * 100,
         report_raw['currentWeather']['cloudCover'] * 100,
         report_raw['currentWeather']['visibility'],
