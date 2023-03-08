@@ -1,5 +1,3 @@
-"""
-"""
 
 import datetime
 import re
@@ -7,10 +5,10 @@ import re
 url = 'https://services.swpc.noaa.gov/text/3-day-forecast.txt'
 
 month_number = {
-    'Jan': 1, 
-    'Feb': 2, 
-    'Mar': 3, 
-    'Apr': 4, 
+    'Jan': 1,
+    'Feb': 2,
+    'Mar': 3,
+    'Apr': 4,
     'May': 5,
     'Jun': 6,
     'Jul': 7,
@@ -30,11 +28,11 @@ def parse(text):
     year = int(year_str)
     month = month_number[month_str]
     day = int(day_str)
-    
+
     table_start_pos = matches.end()
     table = text[table_start_pos:table_start_pos+500]
     lines = table.split('\n')
-    
+
     kp_forecasts = []
     for l in lines[2:-2]:
         hour = int(l[0:2])
@@ -44,7 +42,7 @@ def parse(text):
         g2 = l[33:35]
         v3 = float(l[40:44])
         g3 = l[46:48]
-        
+
         dt1 = datetime.datetime(year, month, day, hour, tzinfo=datetime.timezone.utc)
         dt2 = dt1 + datetime.timedelta(days=1)
         dt3 = dt2 + datetime.timedelta(days=1)
@@ -54,7 +52,7 @@ def parse(text):
         kp_forecasts.append((dt3, v3, g3))
 
     kp_forecasts = { f[0]: ( f[1], f[2]) for f in kp_forecasts }
-    
+
     return kp_forecasts
 
 

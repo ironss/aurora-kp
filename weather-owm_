@@ -1,25 +1,24 @@
 #! /usr/bin/python3
 
 # Munin weather plugin
-# 
+#
 # A Munin plugin that retrieves the current weather from OpenWeatherMap
-# 
+#
 # OpenWeatherMap
 # --------------
-# The OpenWeatherMap free plan is restricted to 
+# The OpenWeatherMap free plan is restricted to
 #     * 60 requests per minute
 #     * 1 million requests per month
-# 
+#
 # Munin does a request every 5 minutes for each location, or 8928 requests per 31-day month
-# 
+#
 # The free plan restrictions therefore allow
-# 
+#
 #     * 60 locations, limited by 60 requests per minute, because all of the requests happen
 #       within the first few seconds of the start of the 5 minute cycle.
-# 
+#
 #     * 112 locations, calculated as (1 million req/month / 8928 req/month/location)
 #
-
 
 import datetime
 import json
@@ -52,7 +51,7 @@ graph_str = 'graph no' # if graph else 'graph no'
 
 
 _graph_specs = [
-    {   
+    {
         'name': 'temperature',
         'config': [
             'graph_title Temperature',
@@ -74,7 +73,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'humidity',
         'config': [
             'graph_title Humidity',
@@ -96,7 +95,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'rain',
         'config': [
             'graph_title Rain',
@@ -118,7 +117,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'cloud',
         'config': [
             'graph_title Cloud cover',
@@ -162,7 +161,7 @@ _graph_specs = [
              },
          ],
     },
-    
+
     {
         'name': 'windspeed',
         'config': [
@@ -270,47 +269,47 @@ def config(hostname, location):
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
-        
+
         for cfg in gr['config']:
             print(cfg)
-        
+
         for fld in gr['fields']:
             fld_name = fld['name']
             for cfg in fld['config']:
                 print('{}.{}'.format(fld_name, cfg))
         print()
-        
-        
+
+
 def fetch(hostname, loc):
     secrets = {
         'api_key': os.environ['OWM_API_KEY']
     }
-   
+
     report = weather.load_report(openweathermap.service, location, secrets)
 
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
-        
+
         for fld in gr['fields']:
             fld_name = fld['name']
             param_name = fld['param']
             fmt = fld['fmt']
-            
+
             if param_name is not None:
                 try:
                     value = report._asdict()[param_name]
                 except KeyError:
                     value = None
-                    
-                if value is not None:                    
+
+                if value is not None:
                     value_fmt = fmt.format(value)
                 else:
                     value_fmt = 'U'
-                    
+
                 print('{}.value {}'.format(fld_name, value_fmt))
         print()
-    
+
 
 if len(sys.argv) > 1:
     cmd = sys.argv[1]

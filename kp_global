@@ -13,17 +13,17 @@ def download(expected_filename, url):
         r = requests.get(url)
         if r.status_code != 200:
             return None
-            
+
         with open(expected_filename, "w") as f:
             f.write(r.text)
 
         return r.text
-    
+
     with open(expected_filename) as f:
         text = f.read()
-    
+
     return text
-    
+
 
 def fetch():
     t_now_dt = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -37,14 +37,14 @@ def fetch():
     t_prev_dt = t_now_dt.replace(hour=(t_now_dt.hour // 3) * 3, minute=0, second=0, microsecond=0)
     t_next_dt = t_prev_dt + datetime.timedelta(hours=3)
     now_fraction = (t_now_dt - t_prev_dt).total_seconds() / datetime.timedelta(hours=3).total_seconds()
-    
+
     try:
-        kp_prev = kp_forecasts[t_prev_dt][0]   
-        kp_next = kp_forecasts[t_next_dt][0]   
+        kp_prev = kp_forecasts[t_prev_dt][0]
+        kp_next = kp_forecasts[t_next_dt][0]
     except KeyError:
         print("kp_forecast.value U")
         return
-    
+
     kp_now = kp_prev + (kp_next - kp_prev) * now_fraction
     print("kp_forecast.value {:0.2f}".format(kp_now))
 

@@ -1,7 +1,6 @@
 # Weather service file for OpenWeatherMap
 #
 
-
 import json
 import datetime
 import math
@@ -15,7 +14,7 @@ def _parse(report_text):
     report_raw = json.loads(report_text)
     if debug:
         print(report_raw)
-        
+
     report = weather.Weather_report(
         datetime.datetime.fromtimestamp(report_raw['dt'], tz=datetime.timezone.utc),
         report_raw['weather'][0]['main'],
@@ -58,7 +57,7 @@ if __name__ == '__main__':
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
         secrets = json.load(f)
-    
+
     locations = [
         ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
         #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
@@ -73,7 +72,7 @@ if __name__ == '__main__':
     for loc in locations:
         location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
         print(location)
-        
+
         report = weather.load_report(service, location, secrets['openweathermap'])
         print(report)
         print()

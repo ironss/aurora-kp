@@ -6,7 +6,7 @@
         "lon" : 172.5500,
         "alt" :  37
     },
-    
+
     "Lyttelton.nz.place": {
         "name": "Lyttelton, NZ",
         "port": [ "LINZ", "Lyttelton" ],
@@ -14,7 +14,7 @@
         "lon" :   172.7200,
         "alt" :     0
     },
-    
+
     "Nelson.nz.place": {
         "name": "Nelson, NZ",
         "port": [ "LINZ", "Nelson" ],
@@ -23,7 +23,7 @@
         "lon" :  173.2210,
         "alt" :    5
     },
-    
+
     "Rarotonga.ck.place": {
         "name": "Rarotonga, CK",
         "icao": "NCRG",
@@ -31,7 +31,7 @@
         "lon" : -159.770833,
         "alt" : 0
     },
-    
+
     "Scott-Base.nz.place": {
         "name": "Scott Base, NZ",
         "port": [ "LINZ", "Scott Base" ],
@@ -40,7 +40,7 @@
         "lon" :  166.7682,
         "alt" :   10
     },
-    
+
     "SANAE-IV.za.place": {
         "name": "SANAE IV, ZA",
         "icao": "AT22",
@@ -56,9 +56,9 @@
         "lon" : -97.3361,
         "alt" : 400
     },
-    
+
     "Amundsen-Scott-Polar-Station.us.place": {
-        "name": "Amundsen-Scott Polar Station, US", 
+        "name": "Amundsen-Scott Polar Station, US",
         "icao": "NZSP",
         "lat" :  -90.0000,
         "lon" :    0.0000,

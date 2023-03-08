@@ -5,7 +5,6 @@
 # A Munin plugin that combines weather data from multiple weather providers
 #
 
-
 import json
 import os
 import sys
@@ -63,7 +62,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'humidity',
         'config': [
             'graph_title Humidity',
@@ -94,7 +93,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'rain',
         'config': [
             'graph_title Rain',
@@ -125,7 +124,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'cloud',
         'config': [
             'graph_title Cloud cover',
@@ -322,10 +321,10 @@ def config(hostname, location):
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
-        
+
         for cfg in gr['config']:
             print(cfg)
-        
+
         for fld in gr['fields']:
             fld_name = fld['name']
             for cfg in fld['config']:

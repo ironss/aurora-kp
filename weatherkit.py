@@ -5,7 +5,6 @@
 #   pre-created with a 400-day lifetime.
 #
 
-
 import json
 import datetime
 import math
@@ -61,7 +60,7 @@ if __name__ == '__main__':
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
         secrets = json.load(f)
-    
+
     locations = [
         ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
         #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
@@ -71,12 +70,12 @@ if __name__ == '__main__':
         #( 'Wichita, KA, US'        ,  37.6889,  -97.3361,  400),
         #( 'Amundsen-Scott Base, US', -90.0000,    0.0000, 2835),
     ]
-    
+
     debug = True
     for loc in locations:
         location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
         print(location)
-        
+
         report = weather.load_report(service, location, secrets['weatherkit'])
         print(report)
         print()

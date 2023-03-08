@@ -1,15 +1,14 @@
 #! /usr/bin/python3
 
 # Munin weather plugin
-# 
+#
 # A Munin plugin that retrieves the current weather from Apple WeatherKit
-# 
+#
 # If you have a developer account, you can use Apple WeatherKit
 #
 # The developer account includes 500 K calls per month.
 # This restriction allows 56 locations, calculated as 500 K requests/month / 8928 req/month/location
 #
-
 
 import datetime
 import json
@@ -42,7 +41,7 @@ graph_str = 'graph no' # if graph else 'graph no'
 
 
 _graph_specs = [
-    {   
+    {
         'name': 'temperature',
         'config': [
             'graph_title Temperature',
@@ -64,7 +63,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'humidity',
         'config': [
             'graph_title Humidity',
@@ -86,7 +85,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'rain',
         'config': [
             'graph_title Rain',
@@ -108,7 +107,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'cloud',
         'config': [
             'graph_title Cloud cover',
@@ -152,7 +151,7 @@ _graph_specs = [
              },
          ],
     },
-    
+
     {
         'name': 'windspeed',
         'config': [
@@ -260,47 +259,47 @@ def config(hostname, location):
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
-        
+
         for cfg in gr['config']:
             print(cfg)
-        
+
         for fld in gr['fields']:
             fld_name = fld['name']
             for cfg in fld['config']:
                 print('{}.{}'.format(fld_name, cfg))
         print()
-        
-        
+
+
 def fetch(hostname, loc):
     secrets = {
         'auth_token': os.environ['AWK_AUTH_TOKEN']
     }
-   
+
     report = weather.load_report(weatherkit.service, location, secrets)
 
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
-        
+
         for fld in gr['fields']:
             fld_name = fld['name']
             param_name = fld['param']
             fmt = fld['fmt']
-            
+
             if param_name is not None:
                 try:
                     value = report._asdict()[param_name]
                 except KeyError:
                     value = None
-                    
-                if value is not None:                    
+
+                if value is not None:
                     value_fmt = fmt.format(value)
                 else:
                     value_fmt = 'U'
-                    
+
                 print('{}.value {}'.format(fld_name, value_fmt))
         print()
-    
+
 
 if len(sys.argv) > 1:
     cmd = sys.argv[1]
