@@ -1,8 +1,8 @@
 secrets.json
 weather_?*
-weatherkit_?*
 weather-owm_?*
 weather-awk_?*
 
 data/
 __pycache__/
+
