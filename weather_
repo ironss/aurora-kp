@@ -38,7 +38,7 @@ _graph_specs = [
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
-            'graph_vlabel °C',
+            'graph_vlabel Temperature (°C)',
             'graph_order air_temperature_owm={hn}:weather_owm_temperature.air_temperature  air_temperature_awk={hn}:weather_awk_temperature.air_temperature'.format(hn=hostname),
             graph_str,
         ],

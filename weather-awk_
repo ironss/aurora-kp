@@ -53,7 +53,7 @@ _graph_specs = [
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
-            'graph_vlabel °C',
+            'graph_vlabel Temperature (°C)',
             graph_str,
         ],
         'fields': [
