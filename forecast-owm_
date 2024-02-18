@@ -80,6 +80,8 @@ _graph_specs = [
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel °C',
             graph_str,
+            'update_rate 900',   # 15 minute update rate
+            'graph_data_size custom 400d',
         ],
         'fields': [
             {
