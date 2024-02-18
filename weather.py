@@ -29,7 +29,7 @@ Weather_report = collections.namedtuple('Weather_report', [
 ])
 
 
-def _load_report(service, location, secrets):
+def _fetch(service, location, secrets):
     params = { k: v.format(**location, **secrets) for k, v in service['url_params'].items() }
     headers = { k: v.format(**location, **secrets) for k, v in service['url_headers'].items() }
     url = service['url_base'].format(**location, **secrets)
@@ -37,8 +37,8 @@ def _load_report(service, location, secrets):
     req = requests.get(url, headers=headers, params=params)
     return req.text
 
-def load_report(service, location, secrets):
-    report_text = _load_report(service, location, secrets)
+def load(service, location, secrets):
+    report_text = _fetch(service, location, secrets)
     report = service['handler'](report_text)
     return report
 

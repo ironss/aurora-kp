@@ -1,5 +1,6 @@
-# Weather service file for OpenWeatherMap
+# Weather forecast file for OpenWeatherMap
 #
+
 
 import json
 import datetime
@@ -10,53 +11,13 @@ import weather
 
 debug = False
 
-def _parse_weather(report_text):
-    report_raw = json.loads(report_text)
+def _parse(forecast_text):
+    forecast_owm = json.loads(forecast_text)
     if debug:
-        print(report_raw)
-
-    report = weather.Weather_report(
-        datetime.datetime.fromtimestamp(report_raw['dt'], tz=datetime.timezone.utc),
-        report_raw['weather'][0]['main'],
-        report_raw['weather'][0]['id'],
-        report_raw['weather'][0]['icon'],
-        report_raw['main']['temp'],
-        report_raw['main']['pressure'],
-        report_raw['wind']['speed'],
-        report_raw['wind']['gust'] if 'gust' in report_raw['wind'] else None,
-        report_raw['wind']['deg'],
-        math.cos(math.radians(90-report_raw['wind']['deg'])),
-        math.sin(math.radians(90-report_raw['wind']['deg'])),
-        None,
-        report_raw['rain']['1h'] if 'rain' in report_raw else 0,  # rain 1h
-        report_raw['main']['humidity'],
-        report_raw['clouds']['all'],
-        report_raw['visibility'],
-    )
-    return report
-
-service_weather = {
-    'name': 'OpenWeatherMap',
-    'url_base': 'https://api.openweathermap.org/data/2.5/weather',
-    'url_params': {
-        'appid': '{api_key}',
-        'lat': '{lat}',
-        'lon': '{lon}',
-        'units': 'metric',
-    },
-    'url_headers': {
-    },
-    'handler': _parse_weather,
-}
-
-
-def _parse_forecast(forecast_text):
-    forecast_raw = json.loads(forecast_text)
-    if debug:
-        print(forecast_raw)
+        print(forecast_owm)
 
     reports = []
-    for fc in forecast_raw['list']:
+    for fc in forecast_owm['list']:
         report = weather.Weather_report(
             datetime.datetime.fromtimestamp(fc['dt'], tz=datetime.timezone.utc),
             fc['weather'][0]['main'],
@@ -71,15 +32,17 @@ def _parse_forecast(forecast_text):
             math.sin(math.radians(90-fc['wind']['deg'])),
             None,  # rain
             fc['rain']['3h'] / 3 if 'rain' in fc else 0,  # rain 1h
+            #None,  # rain 3h
+            #None,  # rain 24h
             fc['main']['humidity'],
             fc['clouds']['all'],
             fc['visibility'],
         )
+        print(report)
         reports.append(report)
-
     return reports
 
-service_forecast = {
+service = {
     'name': 'OpenWeatherMap',
     'url_base': 'https://api.openweathermap.org/data/2.5/forecast',
     'url_params': {
@@ -90,7 +53,7 @@ service_forecast = {
     },
     'url_headers': {
     },
-    'handler': _parse_forecast,
+    'handler': _parse,
 }
 
 
@@ -101,7 +64,7 @@ if __name__ == '__main__':
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
         secrets = json.load(f)
-
+    
     locations = [
         ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
         #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
@@ -116,11 +79,9 @@ if __name__ == '__main__':
     for loc in locations:
         location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
         print(location)
-
-        report = weather.load(service_weather, location, secrets['openweathermap'])
-        print(report)
+        
+        forecasts = weather.load(service, location, secrets['openweathermap'])
+        print(forecasts)
         print()
 
-        forecast = weather.load(service_forecast, location, secrets['openweathermap'])
-        print(forecast)
-        print()
+

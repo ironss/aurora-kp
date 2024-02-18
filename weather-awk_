@@ -25,6 +25,11 @@ def verboselog(s):
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
 
+#print(os.getenv('WEATHER_NAME'))
+#print(os.getenv('WEATHER_ICAO'))
+#print(os.getenv('WEATHER_PORT'))
+
+
 locations_fn = os.getenv('WEATHER_LOCATIONS')
 with open(locations_fn) as f:
     locations = json.load(f)
@@ -275,8 +280,7 @@ def fetch(hostname, loc):
         'auth_token': os.environ['AWK_AUTH_TOKEN']
     }
 
-    report = weather.load_report(weatherkit.service, location, secrets)
-
+    report = weather.load(weatherkit.service, location, secrets)
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))

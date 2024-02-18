@@ -1,29 +1,31 @@
 #! /usr/bin/python3
 
 # Munin weather plugin
-#
+# 
 # A Munin plugin that retrieves the current weather from OpenWeatherMap
-#
+# 
 # OpenWeatherMap
 # --------------
-# The OpenWeatherMap free plan is restricted to
+# The OpenWeatherMap free plan is restricted to 
 #     * 60 requests per minute
 #     * 1 million requests per month
-#
+# 
 # Munin does a request every 5 minutes for each location, or 8928 requests per 31-day month
-#
+# 
 # The free plan restrictions therefore allow
-#
+# 
 #     * 60 locations, limited by 60 requests per minute, because all of the requests happen
 #       within the first few seconds of the start of the 5 minute cycle.
-#
+# 
 #     * 112 locations, calculated as (1 million req/month / 8928 req/month/location)
 #
+
 
 import datetime
 import json
 import os
 import sys
+import time
 
 import weather
 import openweathermap
@@ -35,26 +37,44 @@ def verboselog(s):
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
 
-locations_fn = os.getenv('WEATHER_LOCATIONS')
-with open(locations_fn) as f:
-    locations = json.load(f)
+location = {
+    'name': os.getenv('LOCATION_NAME'),
+    'lat':  os.getenv('LOCATION_LAT'),
+    'lon':  os.getenv('LOCATION_LON'),
+    'alt':  os.getenv('LOCATION_ALT'),
+    'icao': os.getenv('LOCATION_ICAO'),
+    'port': os.getenv('LOCATION_PORT'),
+}
+
+forecast_periods = [
+    '1d',
+    '2d',
+    '3d',
+    '4d',
+    '5d',
+]
+
+#locations_fn = os.getenv('WEATHER_LOCATIONS')
+#with open(locations_fn) as f:
+#    locations = json.load(f)
 
 plugin_name = os.path.basename(sys.argv[0])
 script_name, hostname = plugin_name.split('_')
-location = locations[hostname]
+#location = locations[hostname]
 
 attribution = 'Weather data provided by OpenWeather https://openweathermap.org'
 abbrev = 'OWM'
 
 #graph = os.getenv('WEATHER_SHOW_GRAPH')
-graph_str = 'graph no' # if graph else 'graph no'
+#graph_str = 'graph no' # if graph else 'graph no'
+graph_str = 'graph yes'
 
 
 _graph_specs = [
-    {
+    {   
         'name': 'temperature',
         'config': [
-            'graph_title Temperature',
+            'graph_title Temperature forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
@@ -63,9 +83,9 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'air_temperature',
+                'name': 'air_temperature_{p}',
                 'config': [
-                    'label Air temperature {} (°C)'.format(abbrev),
+                    'label Air temperature {abbr} {p} (°C)',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
@@ -73,10 +93,10 @@ _graph_specs = [
         ],
     },
 
-    {
+    {   
         'name': 'humidity',
         'config': [
-            'graph_title Humidity',
+            'graph_title Humidity forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
@@ -85,9 +105,9 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'air_humidity',
+                'name': 'air_humidity_{p}',
                 'config': [
-                    'label Air humidity {} (%RH)'.format(abbrev),
+                    'label Air humidity {abbr} {p} (%RH)',
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'relative_humidity_pc',
@@ -95,10 +115,10 @@ _graph_specs = [
         ],
     },
 
-    {
+    {   
         'name': 'rain',
         'config': [
-            'graph_title Rain',
+            'graph_title Rain forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 10',
@@ -107,9 +127,9 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'rain_1h',
+                'name': 'rain_1h_{p}',
                 'config': [
-                    'label Rainfall {} (mm/h)'.format(abbrev),
+                    'label Rainfall {abbr} {p} (mm/h)',
                 ],
                 'fmt': '{:0.2f}',
                 'param': 'rain_intensity_mm_h',
@@ -117,10 +137,10 @@ _graph_specs = [
         ],
     },
 
-    {
+    {   
         'name': 'cloud',
         'config': [
-            'graph_title Cloud cover',
+            'graph_title Cloud cover forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
@@ -129,9 +149,9 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'cloud_all',
+                'name': 'cloud_all_{p}',
                 'config': [
-                    'label Cloud cover all levels {} (%)'.format(abbrev),
+                    'label Cloud cover all levels {abbr} {p} (%)',
                 ],
                 'fmt': '{:0.0f}',
                 'param': 'cloud_cover_pc',
@@ -142,7 +162,7 @@ _graph_specs = [
     {
         'name': 'pressure',
         'config': [
-            'graph_title Pressure',
+            'graph_title Pressure forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
@@ -152,20 +172,20 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'air_pressure',
+                'name': 'air_pressure_{p}',
                 'config': [
-                    'label Air pressure {} (hPa)'.format(abbrev),
+                    'label Air pressure {abbr} {p} (hPa)',
                  ],
                  'fmt': '{:0.0f}',
                  'param': 'pressure_hPa',
              },
          ],
     },
-
+    
     {
         'name': 'windspeed',
         'config': [
-            'graph_title Wind speed',
+            'graph_title Wind speed forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 40 --rigid',
@@ -175,19 +195,19 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'windspeed',
+                'name': 'windspeed_{p}',
                 'config': [
-                    'label Wind speed {} (knots)'.format(abbrev),
-                    'cdef windspeed,1.944,*',
+                    'label Wind speed {abbr} {p} (knots)',
+                    'cdef windspeed_{p},1.944,*',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'wind_speed_m_s',
             },
             {
-                'name': 'windgust',
+                'name': 'windgust_{p}',
                 'config': [
-                    'label Wind gust {} (knots)'.format(abbrev),
-                    'cdef windgust,1.944,*',
+                    'label Wind gust {abbr} {p} (knots)',
+                    'cdef windgust_{p},1.944,*',
                 ],
                 'fmt': '{:0.1f}',
                 'param': 'wind_gust_m_s',
@@ -198,7 +218,7 @@ _graph_specs = [
     {
         'name': 'winddirection',
         'config': [
-            'graph_title Wind direction',
+            'graph_title Wind direction forecast',
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
@@ -208,28 +228,28 @@ _graph_specs = [
         ],
         'fields': [
             {
-                'name': 'windvector_E',
+                'name': 'windvector_E_{p}',
                 'config': [
-                    'label Wind vector {} E'.format(abbrev),
+                    'label Wind vector {abbr} {p} (E)',
                     'graph no',
                 ],
                 'fmt': '{:0.3f}',
                 'param': 'wind_vector_E',
             },
             {
-                'name': 'windvector_N',
+                'name': 'windvector_N_{p}',
                 'config': [
-                    'label Wind vector {} N'.format(abbrev),
+                    'label Wind vector {abbr} {p} (N)',
                     'graph no',
                 ],
                 'fmt': '{:0.3f}',
                 'param': 'wind_vector_N',
             },
             {
-                'name': 'winddirection',
+                'name': 'winddirection_{p}',
                 'config': [
-                    'label Wind direction {} (°)'.format(abbrev),
-                    'cdef windvector_N,windvector_E,ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
+                    'label Wind direction {abbr} {p} (°)',
+                    'cdef windvector_N_{p},windvector_E_{p},ATAN2,RAD2DEG,90,EXC,-,360,+,360,%',
                 ],
                 'fmt': None,
                 'param': None,
@@ -237,28 +257,6 @@ _graph_specs = [
         ],
     },
 
-    {
-        'name': 'winddirection_deg',
-        'config': [
-            'graph_title Wind direction deg',
-            'graph_info {att}'.format(att=attribution),
-            'graph_category weather',
-            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
-            'graph_scale no',
-            'graph_vlabel Wind direction (°)',
-            graph_str,
-        ],
-        'fields': [
-            {
-                'name': 'wind_direction_deg',
-                'config': [
-                    'label Wind direction deg {} (°)'.format(abbrev),
-                ],
-                'fmt': '{:0.0f}',
-                'param': 'wind_direction_deg',
-            },
-        ],
-    },
 ]
 
 
@@ -273,10 +271,12 @@ def config(hostname, location):
         for cfg in gr['config']:
             print(cfg)
 
-        for fld in gr['fields']:
-            fld_name = fld['name']
-            for cfg in fld['config']:
-                print('{}.{}'.format(fld_name, cfg))
+        for p in forecast_periods:
+            for fld in gr['fields']:
+                fld_name = fld['name'].format(abbr=abbrev, p=p)
+                for cfg in fld['config']:
+                    cfg1 = cfg.format(abbr=abbrev, p=p)
+                    print('{}.{}'.format(fld_name, cfg1))
         print()
 
 
@@ -284,29 +284,48 @@ def fetch(hostname, loc):
     secrets = {
         'api_key': os.environ['OWM_API_KEY']
     }
+   
+    forecasts = weather.load(openweathermap.service_forecast, location, secrets)
+    report = forecasts[0]
 
-    report = weather.load(openweathermap.service_weather, location, secrets)
+    t_now_s = int(time.time())
+    t_3h_s = (int(t_now_s / (3*3600))+1) * (3*3600)
+
+#    print(datetime.datetime.now(tz=datetime.timezone.utc))
+#    print(len(forecasts))
+#    print(forecasts[0].time_dt)
+#    print(forecasts[-1].time_dt)
+
     for gr in _graph_specs:
         gr_name = gr['name']
         print('multigraph {}_{}'.format(script_name.replace('-', '_'), gr_name))
 
-        for fld in gr['fields']:
-            fld_name = fld['name']
-            param_name = fld['param']
-            fmt = fld['fmt']
+        for p in forecast_periods:
+            offset_s = int(p[0]) * 86400
+            index = int(offset_s / (3*3600)) - 1
+            t_forecast_s = t_3h_s + offset_s
+#            index = int(t_forecast_s / (3*3600))
+#            print(t_now_s, t_3h_s, t_forecast_s, index)
 
-            if param_name is not None:
-                try:
-                    value = report._asdict()[param_name]
-                except KeyError:
-                    value = None
+            report = forecasts[index]
 
-                if value is not None:
-                    value_fmt = fmt.format(value)
-                else:
-                    value_fmt = 'U'
+            for fld in gr['fields']:
+                fld_name = fld['name'].format(p=p)
+                param_name = fld['param']
+                fmt = fld['fmt']
 
-                print('{}.value {}'.format(fld_name, value_fmt))
+                if param_name is not None:
+                    try:
+                        value = report._asdict()[param_name]
+                    except KeyError:
+                        value = None
+
+                    if value is not None:
+                        value_fmt = fmt.format(value)
+                    else:
+                        value_fmt = 'U'
+
+                    print('{}.value {}'.format(fld_name, value_fmt))
         print()
 
 
