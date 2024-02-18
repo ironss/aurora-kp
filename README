@@ -8,9 +8,9 @@ Munin plugins to retrieve online weather forecasts, etc
 Files
 =====
 
-* weather.py        retrieve current weather from a service provider and create 
+* weather.py        retrieve current weather from a service provider and create
   a standard weather report
-  
+
 * weather_owm.py    settings for OpenWeatherMap
 * weather_awk.py    settings for Apple WeatherKit
 
@@ -42,10 +42,10 @@ OpenWeatherMap
 WeatherKit
 ==========
 
-* See instructions on Apple Developer website to 
+* See instructions on Apple Developer website to
 
     * register for Apple WeatherKit
-    
+
     * generate a private key
 
 * Create a long-lasting JWT
@@ -59,13 +59,90 @@ WeatherKit
 * Symlink the Munin plugin as required for each location
 
 
+Change data-storage parameters
+==============================
+
+Sometimes it is useful to store data at finer granularity than the normal
+Munin settings (something like 5 mins for 3 days, 30 mins for 2 weeks,
+2 hours for 1 month, 1 day for 1 year).
+
+Note that this will increase the size of the data stored
+
+    Name   | Details                                       | File size
+    -------|-----------------------------------------------|----------
+    normal | 5m for 2d, 30m for 9d, 2h for 40d, 1d for 1y  |  50 KB
+    huge   | 5m for 1y                                     |   3 MB
+           | 5m for 10y                                    |  30 MB
+           | 5m for 1y, 1h for 10y                         |   5.5 MB
+           | 5m for 100d, 1h for 10y                       |   3.3 MB
+           | 5m for 100d, 1h for 1y                        |   1 MB
+
+Suitable settings for various targets might be
+
+    Name               | Description             | File size | Parameters | Total size
+    -------------------|-------------------------|-----------|------------|-----------
+    server data        | normal                  |  50 KB    |       200  |      1 MB
+    weather data       | 5m for 100d, 1h for 10y |   3.3 MB  |        50  |    200 MB
+    RIVIR gateway data | 5m for 1y               |   3 MB    |        50  |    150 MB
+                       | 5m for 1y, 1h for 10y   |   5.5 MB  |        50  |    275 MB
+
+Munin has a configuration parameter to adjust the data storage size. However, it
+is a global parameter, and cannot be set for individual hosts, plugins or
+graphs.
+
+Munin will work correctly with any RRD file, including one that has been modified
+from the standard.
+
+It is probably best to leave the Munin configuration as standard, then
+adjust the RRD files directly for those that need finer granularity.
+
+
+Process
+-------
+
+* Add the new target to Munin, both the node or node-proxy, and the master
+
+* Wait for Munin to create the RRD files for the new target
+
+* Identify the RRD files that need adjusting
+
+    * a simple list
+    * parameters for 'find'
+
+* Create or find an RRD template file with the required size parameters
+
+* Run the following shell script to adjust the RRD files
+
+.. code-block:: sh
+
+    filelist=$(find /var/lib/munin/Places -name '*.rrd' -size -100k)
+    template=template-weather.rrd
+
+    for f in $filelist; do
+        echo "$f"
+        sudo -u munin cp "$f" "$f.bak"
+        sudo -u munin rrdtool create "$f.tmp" --template "$template" --source "$f"
+        sudo -u munin mv "$f.tmp" "$f"
+    done
+
+* Verify that the new files are correct
+
+* Remove the backup files
+
+.. code-block:: sh
+
+    for f in $filelist; do
+        echo "$f"
+        sudo -u munin rm "$f.bak"
+    done
+
 
 TODO
 ====
 
-* Combine all of those nexeo_ plugins into a single multigraph plugin
+* [DONE] Combine all of those nexeo_ plugins into a single multigraph plugin
 
-* Move the plugins to constanza
+* [DONE] Move the plugins to constanza
 
     * astro
     * tides
@@ -82,19 +159,25 @@ TODO
     * [DONE] this new plugin will not actually read data ('update no'), but will use 'graph_order'
       to borrow the data
 
-* [CANCELLED] Think of a way to store secrets for weatherkit and openweathermap. Currently, stored in 
+* Increase data-storage parameters for various parameters from the default
+
+    * Weather data
+    * RIVIR gateway data
+
+* Think of a better way to store secrets for weatherkit and openweathermap. Currently, stored in
   /etc/munin/plugin-conf.d/weatherkit etc
 
-* [DONE] Think of a way to share location data between plugins
+* Store and share location data between plugins
 
-    * stored in /var/lib/munin/locations.json
+    * [DONE] Stored in /var/lib/munin/locations.json
+    * Think of a better way to store location data
 
 * Generate weatherkit JWT on-the-fly, rather than using the 400-day token that I generated
   manually and stored in /etc/munin/plugin-conf.d/weatherkit.
 
-* [DONE] Add data attribution
+* [DONE] Add data attribution for weather data
 
-* [DONE] Places of interest
+* [PARTIAL] Places of interest
 
     [X] Christchurch -- weather: airport
     [X] Lyttelton -- weather:port, tides: port
@@ -107,5 +190,4 @@ TODO
     [X] Scott Base -- weather
     [X] SANAE IV -- weather
     [X] Amundsen-Scott Polar Station -- weather
-    [ ] other Antarctic bases    
-
+    [ ] other Antarctic bases
