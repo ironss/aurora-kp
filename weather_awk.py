@@ -1,4 +1,3 @@
-#
 # Weather service for Apple WeatherKit
 #
 # * TODO: auth_token is a JWT which could be calculated from first principles. At present, it has been

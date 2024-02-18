@@ -1,6 +1,4 @@
-# Weather forecast file for OpenWeatherMap
-#
-
+# Weather forecast processing for OpenWeatherMap
 
 import json
 import datetime
@@ -64,7 +62,7 @@ if __name__ == '__main__':
     secrets_fn = 'secrets.json'
     with open(secrets_fn) as f:
         secrets = json.load(f)
-    
+
     locations = [
         ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
         #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
@@ -79,7 +77,7 @@ if __name__ == '__main__':
     for loc in locations:
         location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
         print(location)
-        
+
         forecasts = weather.load(service, location, secrets['openweathermap'])
         print(forecasts)
         print()

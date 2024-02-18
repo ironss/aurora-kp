@@ -1,22 +1,22 @@
 #! /usr/bin/python3
 
 # Munin weather plugin
-# 
+#
 # A Munin plugin that retrieves the current weather from OpenWeatherMap
-# 
+#
 # OpenWeatherMap
 # --------------
-# The OpenWeatherMap free plan is restricted to 
+# The OpenWeatherMap free plan is restricted to
 #     * 60 requests per minute
 #     * 1 million requests per month
-# 
+#
 # Munin does a request every 5 minutes for each location, or 8928 requests per 31-day month
-# 
+#
 # The free plan restrictions therefore allow
-# 
+#
 #     * 60 locations, limited by 60 requests per minute, because all of the requests happen
 #       within the first few seconds of the start of the 5 minute cycle.
-# 
+#
 #     * 112 locations, calculated as (1 million req/month / 8928 req/month/location)
 #
 
@@ -71,7 +71,7 @@ graph_str = 'graph yes'
 
 
 _graph_specs = [
-    {   
+    {
         'name': 'temperature',
         'config': [
             'graph_title Temperature forecast',
@@ -95,7 +95,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'humidity',
         'config': [
             'graph_title Humidity forecast',
@@ -117,7 +117,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'rain',
         'config': [
             'graph_title Rain forecast',
@@ -139,7 +139,7 @@ _graph_specs = [
         ],
     },
 
-    {   
+    {
         'name': 'cloud',
         'config': [
             'graph_title Cloud cover forecast',
@@ -183,7 +183,7 @@ _graph_specs = [
              },
          ],
     },
-    
+
     {
         'name': 'windspeed',
         'config': [
@@ -286,7 +286,7 @@ def fetch(hostname, loc):
     secrets = {
         'api_key': os.environ['OWM_API_KEY']
     }
-   
+
     forecasts = weather.load(openweathermap.service_forecast, location, secrets)
     report = forecasts[0]
 

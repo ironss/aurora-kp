@@ -1,5 +1,5 @@
 # Weather service file for OpenWeatherMap
-#
+
 
 import json
 import datetime
