@@ -31,7 +31,7 @@ def config():
     print("graph_vlabel Power index (GW)")
     print("graph_args --lower-limit 0 --upper-limit 100 --rigid")
     print("power_N.label HPI North")
-    print("power_S.label HPI North")
+    print("power_S.label HPI South")
     #print("kp_forecast.line 7")
 
 
