@@ -19,9 +19,18 @@ def download(url):
 def fetch():
     text = download(hemispheric_power_forecast.url)
     power_forecasts = hemispheric_power_forecast.parse(text)
+    forecast = power_forecasts[-1]
 
-    print("power_N.value {:0.2f}".format(power_forecasts[-1][2]))
-    print("power_S.value {:0.2f}".format(power_forecasts[-1][3]))
+    t_now_dt = datetime.datetime.now(tz=datetime.timezone.utc)
+    t_forecast_dt = forecast[0]
+    forecast_age_s = (t_now_dt - t_forecast_dt).total_seconds()
+
+    if forecast_age_s < 7.5*60:  # 7.5 minutes
+        print("power_N.value {:0.2f}".format(forecast[2]))
+        print("power_S.value {:0.2f}".format(forecast[3]))
+    else:
+        print("power_N.value U")
+        print("power_S.value U")
 
 
 def config():
