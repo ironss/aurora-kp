@@ -92,6 +92,15 @@ _graph_specs = [
                 'fmt': '{:0.1f}',
                 'param': 'temperature_C',
             },
+            {
+                'name': 'air_temperature_x_{p}',
+                'config': [
+                    'label Air temperature x {abbr} {p} (°C)',
+                    'cdef air_temperature_{p},1.1,*',
+                ],
+                'fmt': None,
+                'param': None,
+            },
         ],
     },
 
