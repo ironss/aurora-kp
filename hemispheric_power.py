@@ -35,7 +35,7 @@ def fetch():
 
 def config():
     print("host_name worldwide.place")
-    print("graph_title Hemispheric power index")
+    print("graph_title Hemispheric power index forecast")
     print("graph_category astro")
     print("graph_vlabel Power index (GW)")
     print("graph_args --lower-limit 0 --upper-limit 100 --rigid")
