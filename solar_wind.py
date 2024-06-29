@@ -29,15 +29,15 @@ def fetch():
         print("bx_gsm.value  {:0.2f}".format(measurement[1]))
         print("by_gsm.value  {:0.2f}".format(measurement[2]))
         print("bz_gsm.value  {:0.2f}".format(measurement[3]))
-        print("lon_gsm.value {:0.2f}".format(measurement[4]))
-        print("lat_gsm.value {:0.2f}".format(measurement[5]))
+#        print("lon_gsm.value {:0.2f}".format(measurement[4]))
+#        print("lat_gsm.value {:0.2f}".format(measurement[5]))
         print("bt_gsm.value  {:0.2f}".format(measurement[6]))
     else:
         print("bx_gsm.value  U")
         print("by_gsm.value  U")
         print("bz_gsm.value  U")
-        print("lon_gsm.value U")
-        print("lat_gsm.value U")
+#        print("lon_gsm.value U")
+#        print("lat_gsm.value U")
         print("bt_gsm.value  U")
 
 
@@ -47,7 +47,7 @@ def config():
     print("graph_title Magnetic field")
     print("graph_category astro")
     print("graph_vlabel Field stength (nT)")
-    print("graph_args --lower-limit 0 --upper-limit 100 --rigid")
+#    print("graph_args --lower-limit 0 --upper-limit 100 --rigid")
     print("bx_gsm.label Bx")
     print("by_gsm.label By")
     print("bz_gsm.label Bz")
