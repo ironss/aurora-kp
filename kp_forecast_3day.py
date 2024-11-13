@@ -23,7 +23,7 @@ month_number = {
 
 
 def parse(text):
-    kp_table_re = re.compile('NOAA Kp index breakdown ([^ ]+) ([^-]+)-([^ ]+) ([^ ]+) (\S+)\s')
+    kp_table_re = re.compile(r'NOAA Kp index breakdown ([^ ]+) ([^-]+)-([^ ]+) ([^ ]+) (\S+)\s')
     matches = kp_table_re.search(text)
 
     month_str, day_str, _, _, year_str = matches.groups()
