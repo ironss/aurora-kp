@@ -53,9 +53,14 @@ location = {
 attribution = 'Weather data provided by OpenWeather https://openweathermap.org'
 abbrev = 'OWM'
 
-#graph = os.getenv('WEATHER_SHOW_GRAPH')
-#graph_str = 'graph no' # if graph else 'graph no'
-graph_str = 'graph yes'
+#show_graph = os.getenv('WEATHER_SHOW_GRAPH')
+update_rate_s = 3600
+graph_data_size = 'custom 4000d'
+
+#show_graph_str = 'graph no' # if graph else 'graph no'
+show_graph_str = 'graph yes'
+update_rate_str = 'update_rate {}'.format(update_rate_s)
+graph_data_size_str = 'graph_data_size {}'.format(graph_data_size)
 
 
 _graph_specs = [
@@ -67,9 +72,9 @@ _graph_specs = [
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel Temperature (°C)',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -91,9 +96,9 @@ _graph_specs = [
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -115,9 +120,9 @@ _graph_specs = [
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 10',
             'graph_vlabel Rainfall (mm/h)',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -139,9 +144,9 @@ _graph_specs = [
             'graph_category weather',
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Cloud cover (%)',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -164,9 +169,9 @@ _graph_specs = [
             'graph_args --lower-limit 900 --upper-limit 1100 --rigid --y-grid 10:5',
             'graph_scale no',
             'graph_vlabel hPa',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -189,9 +194,9 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 40 --rigid',
             'graph_scale no',
             'graph_vlabel knots',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
@@ -224,9 +229,9 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
-            graph_str,
-            'update_rate 3600',  # 1 hour update rate
-            'graph_data_size custom 4000d',
+            show_graph_str,
+            update_rate_str,
+            graph_data_size_str,
         ],
         'fields': [
             {
