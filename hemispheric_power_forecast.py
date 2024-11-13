@@ -6,7 +6,7 @@ import re
 
 url = 'https://services.swpc.noaa.gov/text/aurora-nowcast-hemi-power.txt'
 
-re_str = '(\S+)\s+(\S+)\s+(\S+)\s+(\S+)'
+re_str = r'(\S+)\s+(\S+)\s+(\S+)\s+(\S+)'
 parse_re = re.compile(re_str)
 
 def parse(text):
