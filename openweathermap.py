@@ -97,14 +97,36 @@ service_forecast = {
 if __name__ == '__main__':
     import json
     import weather
+    import os
 
-    secrets_fn = 'secrets.json'
-    with open(secrets_fn) as f:
-        secrets = json.load(f)
+    apikey = None
+
+    if apikey is None:
+        apikey = os.getenv('OWM_APIKEY')
+
+    if apikey is None:
+        secrets_fn = 'secrets.json'
+        try:
+            with open(secrets_fn) as f:
+                secrets = json.load(f)
+        except FileNotFoundError:
+            secrets = None
+
+        try:
+            apikey = secrets['openweathermap']
+        except (TypeError, KeyError):
+            apikey = None
+
+    if apikey is None:
+        raise ValueError('apikey not found')
+
+    owm_secrets = {
+        'api_key': apikey,
+    }
 
     locations = [
         ( 'Christchurch, NZ'       , -43.4821,  172.5500,   37),
-        #( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
+        ( 'Lyttelton, NZ'          , -43.6000,  172.7200,    0),
         #( 'Nelson, NZ'             , -41.2980,  173.2210,    5),
         #( 'Scott Base, NZ'         , -77.8491,  166.7682,   10),
         #( 'SANAE IV, ZA'           , -71.6724,   -2.8249,  850),
@@ -117,10 +139,10 @@ if __name__ == '__main__':
         location = { k: loc[i] for i, k in enumerate(['name', 'lat', 'lon', 'alt']) }
         print(location)
 
-        report = weather.load(service_weather, location, secrets['openweathermap'])
+        report = weather.load(service_weather, location, owm_secrets)
         print(report)
         print()
 
-        forecast = weather.load(service_forecast, location, secrets['openweathermap'])
+        forecast = weather.load(service_forecast, location, owm_secrets)
         print(forecast)
         print()

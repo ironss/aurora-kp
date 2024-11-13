@@ -20,10 +20,12 @@
 #     * 112 locations, calculated as (1 million req/month / 8928 req/month/location)
 #
 
+
 import datetime
 import json
 import os
 import sys
+import time
 
 import weather
 import openweathermap
@@ -34,20 +36,26 @@ def verboselog(s):
     if verbose:
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
-
-locations_fn = os.getenv('WEATHER_LOCATIONS')
-with open(locations_fn) as f:
-    locations = json.load(f)
-
 plugin_name = os.path.basename(sys.argv[0])
 script_name, hostname = plugin_name.split('_')
-location = locations[hostname]
+
+
+location = {
+    'name': os.getenv('LOCATION_NAME'),
+    'lat':  os.getenv('LOCATION_LAT'),
+    'lon':  os.getenv('LOCATION_LON'),
+    'alt':  os.getenv('LOCATION_ALT'),
+    'icao': os.getenv('LOCATION_ICAO'),
+    'port': os.getenv('LOCATION_PORT'),
+}
+
 
 attribution = 'Weather data provided by OpenWeather https://openweathermap.org'
 abbrev = 'OWM'
 
 #graph = os.getenv('WEATHER_SHOW_GRAPH')
-graph_str = 'graph no' # if graph else 'graph no'
+#graph_str = 'graph no' # if graph else 'graph no'
+graph_str = 'graph yes'
 
 
 _graph_specs = [
@@ -60,6 +68,9 @@ _graph_specs = [
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel Temperature (°C)',
             graph_str,
+            'update_rate 900',   # 15 minute update rate
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -237,28 +248,6 @@ _graph_specs = [
         ],
     },
 
-    {
-        'name': 'winddirection_deg',
-        'config': [
-            'graph_title Wind direction deg',
-            'graph_info {att}'.format(att=attribution),
-            'graph_category weather',
-            'graph_args --lower-limit 0 --upper-limit 360 --rigid --y-grid 30:3',
-            'graph_scale no',
-            'graph_vlabel Wind direction (°)',
-            graph_str,
-        ],
-        'fields': [
-            {
-                'name': 'wind_direction_deg',
-                'config': [
-                    'label Wind direction deg {} (°)'.format(abbrev),
-                ],
-                'fmt': '{:0.0f}',
-                'param': 'wind_direction_deg',
-            },
-        ],
-    },
 ]
 
 
@@ -282,7 +271,7 @@ def config(hostname, location):
 
 def fetch(hostname, loc):
     secrets = {
-        'api_key': os.environ['OWM_API_KEY']
+        'api_key': os.environ['OWM_APIKEY']
     }
 
     report = weather.load(openweathermap.service_weather, location, secrets)
@@ -325,4 +314,3 @@ if len(sys.argv) > 1:
     exit(1)
 
 fetch(hostname, location)
-

@@ -36,6 +36,9 @@ def verboselog(s):
     if verbose:
         sys.stderr.write('{}: {}\n'.format(plugin_name, s))
 
+plugin_name = os.path.basename(sys.argv[0])
+script_name, hostname = plugin_name.split('_')
+
 
 location = {
     'name': os.getenv('LOCATION_NAME'),
@@ -54,13 +57,6 @@ forecast_periods = [
     '5d',
 ]
 
-#locations_fn = os.getenv('WEATHER_LOCATIONS')
-#with open(locations_fn) as f:
-#    locations = json.load(f)
-
-plugin_name = os.path.basename(sys.argv[0])
-script_name, hostname = plugin_name.split('_')
-#location = locations[hostname]
 
 attribution = 'Weather data provided by OpenWeather https://openweathermap.org'
 abbrev = 'OWM'
@@ -78,10 +74,11 @@ _graph_specs = [
             'graph_info {att}'.format(att=attribution),
             'graph_category weather',
             'graph_args --lower-limit -10 --upper-limit 40',
-            'graph_vlabel °C',
+            'graph_vlabel Temperature (°C)',
             graph_str,
             'update_rate 900',   # 15 minute update rate
-            'graph_data_size custom 400d',
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -284,7 +281,7 @@ def config(hostname, location):
 
 def fetch(hostname, loc):
     secrets = {
-        'api_key': os.environ['OWM_API_KEY']
+        'api_key': os.environ['OWM_APIKEY']
     }
 
     forecasts = weather.load(openweathermap.service_forecast, location, secrets)
@@ -292,11 +289,6 @@ def fetch(hostname, loc):
 
     t_now_s = int(time.time())
     t_3h_s = (int(t_now_s / (3*3600))+1) * (3*3600)
-
-#    print(datetime.datetime.now(tz=datetime.timezone.utc))
-#    print(len(forecasts))
-#    print(forecasts[0].time_dt)
-#    print(forecasts[-1].time_dt)
 
     for gr in _graph_specs:
         gr_name = gr['name']
@@ -346,4 +338,3 @@ if len(sys.argv) > 1:
     exit(1)
 
 fetch(hostname, location)
-
