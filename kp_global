@@ -39,8 +39,8 @@ def fetch():
     now_fraction = (t_now_dt - t_prev_dt).total_seconds() / datetime.timedelta(hours=3).total_seconds()
 
     try:
-        kp_prev = kp_forecasts[t_prev_dt][0]
-        kp_next = kp_forecasts[t_next_dt][0]
+        kp_prev = kp_forecasts[t_prev_dt][1]
+        kp_next = kp_forecasts[t_next_dt][1]
     except KeyError:
         print("kp_forecast.value U")
         return

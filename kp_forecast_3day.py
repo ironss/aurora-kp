@@ -35,7 +35,7 @@ def parse(text):
     table = text[table_start_pos:table_start_pos+500]
     lines = table.split('\n')
 
-    kp_forecasts = []
+    forecasts = []
     for l in lines[2:-2]:
         hour = int(l[0:2])
         v1 = float(l[14:18])
@@ -49,12 +49,11 @@ def parse(text):
         dt2 = dt1 + datetime.timedelta(days=1)
         dt3 = dt2 + datetime.timedelta(days=1)
 
-        kp_forecasts.append((dt1, v1, g1))
-        kp_forecasts.append((dt2, v2, g2))
-        kp_forecasts.append((dt3, v3, g3))
+        forecasts.append((dt1, v1, g1))
+        forecasts.append((dt2, v2, g2))
+        forecasts.append((dt3, v3, g3))
 
-    kp_forecasts = { f[0]: ( f[1], f[2]) for f in kp_forecasts }
-
+    kp_forecasts = { f[0]: f for f in forecasts }
     return kp_forecasts
 
 
@@ -65,6 +64,5 @@ if __name__ == '__main__':
     r = requests.get(url)
     kp_forecasts = parse(r.text)
 
-    for dt, f in kp_forecasts.items():
-        print(dt, f[0], f[1])
-
+    for dt, (_, v, g) in kp_forecasts.items():
+        print(dt, v, g)
