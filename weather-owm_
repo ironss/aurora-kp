@@ -68,7 +68,6 @@ _graph_specs = [
             'graph_args --lower-limit -10 --upper-limit 40',
             'graph_vlabel Temperature (°C)',
             graph_str,
-            'update_rate 900',   # 15 minute update rate
             'update_rate 3600',  # 1 hour update rate
             'graph_data_size custom 4000d',
         ],
@@ -93,6 +92,8 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Humidity (%RH)',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -115,6 +116,8 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 10',
             'graph_vlabel Rainfall (mm/h)',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -137,6 +140,8 @@ _graph_specs = [
             'graph_args --lower-limit 0 --upper-limit 100 --rigid',
             'graph_vlabel Cloud cover (%)',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -160,6 +165,8 @@ _graph_specs = [
             'graph_scale no',
             'graph_vlabel hPa',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -183,6 +190,8 @@ _graph_specs = [
             'graph_scale no',
             'graph_vlabel knots',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
@@ -216,6 +225,8 @@ _graph_specs = [
             'graph_scale no',
             'graph_vlabel Wind direction (°)',
             graph_str,
+            'update_rate 3600',  # 1 hour update rate
+            'graph_data_size custom 4000d',
         ],
         'fields': [
             {
